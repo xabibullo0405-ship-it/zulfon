@@ -1,6 +1,7 @@
 import {readFile} from 'node:fs/promises';
 import {PDFDocument,PDFName,PDFDict} from 'pdf-lib';
 import assert from 'node:assert/strict';
+import {setLanguage,ui,canonicalRole} from '../src/i18n/index.js';
 import {buildReportsPdf} from '../src/lib/pdfDocument.js';
 const fontBytes=await readFile('src/assets/DejaVuSans.ttf'),boldFontBytes=await readFile('src/assets/DejaVuSans-Bold.ttf');
 const image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j8S8AAAAASUVORK5CYII=','base64');
@@ -12,4 +13,8 @@ let images=0;for(const page of doc.getPages()){const resources=page.node.Resourc
 assert.equal(images,2,'All attached photos must be embedded');
 await assert.rejects(buildReportsPdf({...input,loadPhoto:async()=>{throw new Error('Denied')}}),/Denied/);
 await assert.rejects(buildReportsPdf({...input,reports:[]}),/hisobot tanlang/);
+setLanguage('ru');
+assert.equal(ui(' Hisobotlar '),' Отчёты ');assert.equal(ui(report.text),report.text);assert.equal(canonicalRole('Продавец'),'Sotuvchi');
+const russian=await PDFDocument.load(await buildReportsPdf(input));assert.equal(russian.getTitle(),'Zulfon — отчёты');assert(russian.getPageCount()>1);
+setLanguage('uz');assert.equal(ui('Hisobotlar'),'Hisobotlar');
 console.log('PDF passed: Unicode font embedding, multi-page wrapping, both photos embedded, failed photo load prevents incomplete download and empty report validation.');

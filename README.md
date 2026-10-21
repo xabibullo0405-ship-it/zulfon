@@ -28,6 +28,9 @@ Eski mahalliy brauzer hisoblari serverga avtomatik ko‘chirilmaydi. Supabase o�
 
 ## Imkoniyatlar
 
+- O‘zbekcha/ruscha interfeys: pastki o‘ng burchakdagi O‘z / Рус tugmalari. Til shu brauzerda saqlanadi, formadagi ma’lumotlar va sessiya saqlanib qoladi. Ismlar va foydalanuvchi yozgan hisobotlar tarjima qilinmaydi. PDF yorliqlari tanlangan tilda chiqadi.
+
+
 - Supabase login/parol va sessiya; rol bazadan aniqlanadi.
 - Jami 10 hisob chegarasi, direktor boshqaradigan lavozim va login-parol yaratish.
 - Xodim profilini o‘zi to‘ldiradi; yakunlangach direktor ro‘yxatida ko‘rinadi.
