@@ -19,4 +19,4 @@ export function ui(value){
  return translated?value.slice(0,value.indexOf(key))+translated+value.slice(value.indexOf(key)+key.length):value;
 }
 
-export const canonicalRole=value=>Object.keys(ru).find(key=>['Prorab','Brigada boshlig‘i','Omborchi','Hisobchi','Muhandis','Sotuvchi'].includes(key)&&ru[key]===value)||value;
+export const canonicalRole=value=>Object.keys(ru).find(key=>['Prorab','Brigadir','Brigada boshlig‘i','Omborchi','Hisobchi','Muhandis','Sotuvchi'].includes(key)&&ru[key]===value)||value;

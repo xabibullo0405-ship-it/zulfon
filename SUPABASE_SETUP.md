@@ -3,6 +3,29 @@
 Loyiha: `pumkmcpekrbshcvfojim`.
 Frontend uchun to‘g‘ri URL: `https://pumkmcpekrbshcvfojim.supabase.co` — `/rest/v1/` qo‘shimchasisiz.
 
+## Obyekt hujjatlari, ombor va quruvchilar (21-oktabr yangilanishi)
+
+Oldingi to‘rtta migratsiya, jumladan `202610160002_management_workflows.sql`, bajarilgan bo‘lishi kerak. So‘ng **`supabase/migrations/202610210001_site_operations.sql`** faylini SQL Editor’da yangi so‘rovga to‘liq qo‘yib, bir marta Run bosing. Avval bajarilgan migratsiyalarni takrorlamang. Yangi loyiha uchun `supabase/migrations/` fayllari nomi bo‘yicha ketma-ket bajariladi. Ushbu yangilanish uchun `manage-members` Edge Function’ni qayta deploy qilish shart emas.
+
+Migratsiya mavjud ma’lumotlarni saqlaydi. Eski obyektlarda blok/qavat sonlari bo‘sh qoladi; ularni Obyektlar → Tahrirlash orqali to‘ldiring. Direktor xodim profilida obyektni biriktiradi. Ombor va quruvchilar shu obyekt bo‘yicha ajratiladi; obyekt biriktirilmagan xodim omborni boshqara olmaydi yoki quruvchi yubora olmaydi.
+
+| Lavozim | Ombor | Quruvchilar |
+| --- | --- | --- |
+| Direktor | Barcha obyektlardagi mavjud qoldiq; boshqarish va taqsimot tarixi yo‘q | Pasport ma’lumotlari ochilmaydi |
+| Omborchi | Biriktirilgan obyekt: material yaratish/tahrirlash, kirim, brigadaga berish, qaytarish, nol qoldiqli materialni arxivlash | Yo‘q |
+| Prorab | Biriktirilgan obyektning qoldig‘i va brigadalarga berilgan materiallar, faqat o‘qish | Shu obyektdagi arizalarni ko‘rish, tasdiqlash yoki sabab bilan rad etish |
+| Brigadir | Faqat o‘ziga berilgan/qaytarilgan materiallar, ombor qoldig‘i ochilmaydi | O‘z brigadasi quruvchilarini yuborish va tasdiqlanganlar ro‘yxati |
+| Boshqa xodim | Yo‘q | Yo‘q |
+
+`Brigada boshlig‘i`, `Brigadir`, `Brigadar` va ruscha standart nomlar taniladi. Ixtiyoriy boshqa lavozim avtomatik maxsus ruxsat olmaydi. Hisobotlar, Topshiriqlar va Chat barcha xodimlarda bor; Sotuvlar faqat Sotuvchi uchun saqlangan. Chat barcha faol xodimlar orasida ishlaydi, xabar matnini faqat ikki ishtirokchi ko‘radi. Aloqa ro‘yxati faqat ID, ism, lavozim va obyektni beradi, pasport/telefon/emailni bermaydi.
+
+- **Obyekt hujjatlari:** nom, manzil, blok/qavat soni va tugash sanasi. PDF hujjatlar ixtiyoriy, har biri 10 MB gacha; keyinroq tahrirlash oynasida yana qo‘shish mumkin. `project-documents` yopiq bucket. Yuklash/o‘chirish direktor uchun, o‘qish direktor va biriktirilgan obyekt xodimlari uchun. Obyekt saqlanib, fayl yuklashda xato bo‘lsa, shu oynada qayta saqlash yangi obyekt nusxasini yaratmaydi.
+- **Ombor:** miqdorlar 0.001 aniqlikkacha. Taqsimot faqat shu obyektning faol brigadiriga. Yetarli qoldiq bo‘lmasa berilmaydi; qaytarish avval berilgan va hali qaytmagan miqdordan oshmaydi. Harakatlar o‘chirilmaydi; xato berilgan material qaytarish orqali hisobga olinadi. RPClar item qatorini bloklaydi va qayta yuborilgan bir xil operatsiyani ikki marta hisoblamaydi.
+- **Quruvchi:** ism-familiya, vazifa, pasport matni va 1–4 JPEG/PNG rasm (har biri 5 MB gacha). Quruvchi alohida Auth hisobini olmaydi va 10 hisob limitini egallamaydi. Prorab tasdig‘igacha faqat “Tasdiq kutilmoqda” ro‘yxatida turadi. Rad etilgan yozuv tarixda saqlanadi; tuzatilgan ma’lumotlar yangi so‘rov bilan yuboriladi.
+- **Pasport rasmlari:** `worker-passports` yopiq bucketida; faqat o‘z brigadiri va shu obyekt prorabi. Direktor, omborchi, boshqa brigadir va boshqa obyekt prorabi o‘qiy olmaydi. Yuborilgan rasmlar mijoz orqali almashtirilmaydi/o‘chirilmaydi. Ko‘rish havolasi 60 soniya amal qiladi; avval olingan havola shu muddat tugaguncha ishlashi mumkin. Bo‘shatilgan xodimning yangi so‘rovlari darhol bloklanadi. Qoralama yuklamalar oynani bekor qilishda tozalanadi; brauzer kutilmaganda yopilsa yuklangan qoralama fayllarni administrator keyin tozalashi mumkin.
+
+Git push bu SQLni Supabase’da avtomatik bajarmaydi. O‘rnatgandan keyin obyekt yarating, Omborchi/Prorab/Brigadirlarni shu obyektga biriktiring, kirim → berish → qaytarish hamda quruvchi → prorab tasdig‘i jarayonini ikki qurilmada tekshiring.
+
 ## Ishlayotgan saytga yangi imkoniyatlarni o‘rnatish
 
 Oldingi uch migratsiya bajarilgan bo‘lsa, ularni qaytarmang:

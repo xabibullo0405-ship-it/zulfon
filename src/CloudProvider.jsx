@@ -18,12 +18,14 @@ export function CloudProvider({children,employee}){
  const refresh=useCallback(async()=>{
   if(!session)return;const request=++version.current;setLoading(true);
   try{
-   const results=await Promise.all(['members','reports','tasks','messages','projects','sales'].map(table=>supabase.from(table).select('*').order('created_at',{ascending:table==='messages'})));
-   let schemaReady=true;for(let i=0;i<results.length;i++)if(results[i].error){if(i>=4&&['42P01','PGRST205'].includes(results[i].error.code)){schemaReady=false;results[i]={data:[]}}else throw results[i].error;}
+   const results=await Promise.all(['members','reports','tasks','messages','projects','sales','project_documents','inventory_items','inventory_movements','construction_workers'].map(table=>supabase.from(table).select('*').order('created_at',{ascending:table==='messages'})));
+   let schemaReady=true,operationsReady=true;for(let i=0;i<results.length;i++)if(results[i].error){if(i>=4&&['42P01','PGRST205'].includes(results[i].error.code)){if(i<6)schemaReady=false;else operationsReady=false;results[i]={data:[]}}else throw results[i].error;}
    if(request!==version.current)return;
-   const [members,reports,tasks,messages,projects,sales]=results.map(r=>r.data);
+   const [members,reports,tasks,messages,projects,sales,documents,inventory,movements,workers]=results.map(r=>r.data);
+   let directory=[],allocationLabels=[];if(operationsReady){const [contacts,labels]=await Promise.all([supabase.rpc('staff_directory'),supabase.rpc('allocation_labels')]);if(contacts.error||labels.error)throw contacts.error||labels.error;directory=contacts.data||[];allocationLabels=labels.data||[];}
+   if(request!==version.current)return;
    const me=members.find(m=>m.id===session.user.id);if(!me)throw new Error('Hisobning bazadagi profili topilmadi. Administratorga murojaat qiling.');
-   setSnapshot({members,reports,tasks,messages,projects,sales,me,schemaReady});setError('');
+   setSnapshot({members,reports,tasks,messages,projects,sales,documents,inventory,movements,workers,directory,allocationLabels,me,schemaReady,operationsReady});setError('');
   }catch(e){if(request===version.current)setError(e.code==='42P01'||e.code==='PGRST205'?'Supabase jadvallari hali o‘rnatilmagan. SQL migratsiyasini bajaring.':e.message||'Ma’lumotlarni yuklab bo‘lmadi.')}
   finally{if(request===version.current)setLoading(false)}
  },[session]);
@@ -51,6 +53,6 @@ export function CloudProvider({children,employee}){
  const setTasks=async(fn)=>{const next=typeof fn==='function'?fn(tasks):fn;for(const t of next){const old=tasks.find(o=>o.id===t.id);if(!old)await rpc('create_task',{p_title:t.title,p_description:t.description,p_assignee:t.person,p_due:t.due,p_priority:t.priority});else if(old.progress!==t.progress)await rpc('update_task_progress',{p_id:t.id,p_progress:t.progress})}};
  const setReports=async(fn)=>{const next=fn(reports);for(const r of next){const old=reports.find(o=>o.id===r.id);if(old&&old.status!==r.status)await rpc('review_report',{p_id:r.id})}};
  const setMessages=async(fn)=>{const next=fn(messages);for(const m of next)if(!messages.some(old=>old.id===m.id))await rpc('send_message',{p_recipient:m.conversation,p_body:m.text})};
- const value={projects:snapshot.projects,sales:snapshot.sales,schemaReady:snapshot.schemaReady,allPeople,people,reports,tasks,messages,accounts,profile,me:snapshot.me,members:snapshot.members,refresh,rpc,signOut,setTasks,setReports,setMessages,setProfile:saveProfile,saveProfile,error,setError,loading};
+ const value={operationsReady:snapshot.operationsReady,documents:snapshot.documents,inventory:snapshot.inventory,movements:snapshot.movements,workers:snapshot.workers,directory:snapshot.directory,allocationLabels:snapshot.allocationLabels,projects:snapshot.projects,sales:snapshot.sales,schemaReady:snapshot.schemaReady,allPeople,people,reports,tasks,messages,accounts,profile,me:snapshot.me,members:snapshot.members,refresh,rpc,signOut,setTasks,setReports,setMessages,setProfile:saveProfile,saveProfile,error,setError,loading};
  return <Context.Provider value={value}>{ui(error&&<div className="cloud-error" role="alert">{ui(error)}<button onClick={()=>setError('')}>×</button></div>)}{ui(snapshot.me.app_role==='director'?children:employee)}</Context.Provider>;
 }
