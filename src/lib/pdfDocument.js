@@ -4,10 +4,10 @@ export async function buildReportsPdf({reports,getPerson,getProject,fontBytes,bo
  if(!reports.length)throw new Error('Yuklab olish uchun hisobot tanlang.');
  const doc=await PDFDocument.create();doc.registerFontkit(fontkit);
  const font=await doc.embedFont(fontBytes,{subset:true}),bold=await doc.embedFont(boldFontBytes,{subset:true});
- doc.setTitle('Themelio — hisobotlar');doc.setCreator('Themelio');
+ doc.setTitle('Zulfon — hisobotlar');doc.setCreator('Zulfon');
  const width=595,height=842,margin=44,maxWidth=width-2*margin;
  let page,y;
- const newPage=()=>{page=doc.addPage([width,height]);y=height-margin;page.drawText('THEMELIO',{x:margin,y,size:15,font:bold,color:rgb(.13,.25,.2)});y-=34};
+ const newPage=()=>{page=doc.addPage([width,height]);y=height-margin;page.drawText('ZULFON',{x:margin,y,size:15,font:bold,color:rgb(.13,.25,.2)});y-=34};
  const text=(value,size=11,strong=false)=>{
   const chosen=strong?bold:font;
   for(const paragraph of String(value??'').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'').split('\n')){

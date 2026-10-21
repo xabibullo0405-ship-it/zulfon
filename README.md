@@ -1,4 +1,4 @@
-# Themelio — qurilish boshqaruvi
+# Zulfon — qurilish boshqaruvi
 
 PDF maketlari asosida yaratilgan o‘zbek tilidagi React/Vite kabineti. Supabase Auth, direktor/xodim rollari, xodimning o‘z profilini to‘ldirishi, hisobot yuborish va direktor tomonidan tasdiqlash qo‘shilgan.
 
