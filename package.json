@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "npm run test:db && npm run test:edge && npm run test:pdf && npm run test:ui",
-    "test:db": "node tests/database.mjs && node tests/repair-schema.mjs && node tests/create-director.mjs && node tests/diagnose-auth.mjs && node tests/workflows.mjs && node tests/site-operations.mjs",
+    "test:db": "node tests/database.mjs && node tests/repair-schema.mjs && node tests/create-director.mjs && node tests/diagnose-auth.mjs && node tests/workflows.mjs && node tests/site-operations.mjs && node tests/accounting.mjs",
     "test:ui": "node tests/cloud-smoke.cjs",
     "provision": "node scripts/provision-users.mjs",
     "test:edge": "node tests/edge.mjs",

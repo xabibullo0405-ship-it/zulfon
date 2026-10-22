@@ -3,6 +3,22 @@
 Loyiha: `pumkmcpekrbshcvfojim`.
 Frontend uchun to‘g‘ri URL: `https://pumkmcpekrbshcvfojim.supabase.co` — `/rest/v1/` qo‘shimchasisiz.
 
+## Hisobchi, quruvchi hujjatlari va sotuv ruxsatlari (22-oktabr)
+
+Oldingi beshta migratsiya, jumladan `202610210001_site_operations.sql`, bajarilgach **`supabase/migrations/202610220001_accounting_and_workers.sql`** faylini SQL Editor’da yangi so‘rovga to‘liq qo‘yib, bir marta Run bosing. Avval bajarilgan fayllarni takrorlamang. Yangi loyiha migratsiyalarni fayl nomi bo‘yicha ketma-ket bajaradi. Edge Function’ni o‘zgartirish talab qilinmaydi.
+
+- **Omborchi:** yuqoridagi “Brigadirlarga taqsimlash” tugmasi orqali material va shu obyekt brigadirini tanlaydi. Tugma telefon ekranida ham ko‘rinadi. Omborda qoldiq bo‘lmasa avval material yarating va Kirim qiling. Omborchi va brigadirlar bir obyektga biriktirilgan, profillari faol bo‘lishi kerak.
+- **Chat:** Telegramga o‘xshash suhbatlar ro‘yxati, qidiruv, avatar, oxirgi xabar, sana va xabar pufakchalari. Enter yuboradi, Shift+Enter yangi satr; har bir suhbat qoralamasi chat oynasi ichida saqlanadi. Bitta belgi serverga yuborilganini anglatadi, o‘qilganini bildirmaydi. Telefon ko‘rinishida orqaga tugmasi suhbatlar ro‘yxatiga qaytaradi.
+- **Pasport:** 2 lotin harfi + 6–7 raqam (`AD123456` yoki `AD1234567`); JSHSHIR alohida **14 raqamli matn** (boshidagi 0 saqlanadi). 1–4 ta pasport rasmi majburiy; frontend va SQL ikkisi tekshiradi. Eski erkin matnli `submit_worker` RPCsi yopiladi.
+- **Eski quruvchilar:** ma’lumotlar o‘chmaydi. Oldin tasdiqlanganlar ishlashda davom etadi. Tasdiq kutilayotgan eski yozuvda pasport raqami/JSHSHIR bo‘lmasa, brigadir “Batafsil → Quruvchi ma’lumotlarini to‘ldirish” orqali tuzatadi; mavjud rasmlarni saqlashi yoki yangisini yuklashi mumkin. Rad etilgan yozuv ham shu yo‘l bilan yana tasdiqqa yuboriladi. Tasdiqlangan quruvchining hujjatlarini brigadir o‘zgartira olmaydi.
+- **Ishdan bo‘shatish:** prorab faqat o‘z obyektidagi tasdiqlangan quruvchini sabab yozib bo‘shatadi. Yozuv va hujjatlar tarixda saqlanadi, “Ishdan bo‘shatilgan” ro‘yxatiga o‘tadi va faol quruvchilar sonidan chiqadi. Boshqa brigadir yoki boshqa obyekt prorabi bu amalni bajara olmaydi.
+- **Hisobchi / Бухгалтер:** barcha obyektlar bo‘yicha “Xodimlar va oyliklar”, “Ombor xarajatlari”, “Brigadalar” bo‘limlari. Xodim uchun oyiga bitta yozuv: belgilangan summa, to‘langan summa va qoldiq. Direktor va quruvchilar kiritilmaydi. Bu mablag‘ hisobini yuritadi; bank orqali pul o‘tkazmaydi. Oylikni tahrirlash shu oyning yozuvini yangilaydi. Bo‘shatilgan xodimning avvalgi yozuvlari saqlanadi, yangi oylik belgilanmaydi.
+- **Ombor xarajatlari:** hisobchi haqiqiy Kirim harakatiga xarajat, to‘langan summa, yetkazib beruvchi va hisob-faktura raqamini yozadi. Narx kiritilmagan kirimlar alohida sanaladi; ular bepul kirim deb hisoblanmaydi. Miqdor ombor daftaridan olinadi, hisobchi miqdorni o‘zgartirmaydi.
+- **Brigadalar:** hisobchi brigadir nomi, obyekti va tasdiqlangan faol quruvchilar sonini ko‘radi. Pasport raqami, JSHSHIR yoki rasmlar hisobchiga berilmaydi.
+- **Sotuvlar:** direktor faqat ko‘radi va eksport qiladi. Qo‘shish/tahrirlash interfeysda ham, SQL RPCda ham faqat Sotuvchiga ochiq.
+
+Moliyaviy jadvallar: `payroll`, `receipt_costs`. Ularni faqat faol Hisobchi o‘qiydi/yangilaydi; boshqa rollarga moliyaviy yozuvlar berilmaydi. Eski hisoblar va lavozimlar saqlanadi. Hisobchi lavozimi aynan `Hisobchi` yoki `Бухгалтер` bo‘lishi kerak.
+
 ## Obyekt hujjatlari, ombor va quruvchilar (21-oktabr yangilanishi)
 
 Oldingi to‘rtta migratsiya, jumladan `202610160002_management_workflows.sql`, bajarilgan bo‘lishi kerak. So‘ng **`supabase/migrations/202610210001_site_operations.sql`** faylini SQL Editor’da yangi so‘rovga to‘liq qo‘yib, bir marta Run bosing. Avval bajarilgan migratsiyalarni takrorlamang. Yangi loyiha uchun `supabase/migrations/` fayllari nomi bo‘yicha ketma-ket bajariladi. Ushbu yangilanish uchun `manage-members` Edge Function’ni qayta deploy qilish shart emas.
@@ -41,7 +57,7 @@ Yangi migratsiya bajarilmaguncha sayt ko‘rsatma chiqaradi va yangi boshqaruv a
 - **Topshiriqlar:** tahrirlash, mas’ulni almashtirish va tasdiq bilan o‘chirish.
 - **Hisobotlar:** tekshirilayotgan hisobotni tasdiqlash yoki majburiy sabab bilan bekor qilish. Sabab xodimga ko‘rinadi. Qaror qayta o‘zgartirilmaydi; xodim tuzatilgan yangi hisobot yuborishi mumkin.
 - **PDF:** bitta yoki filtrlangan hisobotlarni barcha rasmlari bilan haqiqiy PDFga yuklash. Rasm yuklanmasa tugallanmagan PDF chiqarilmaydi. Yopiq rasmlarga vaqtinchalik havolalar 10 daqiqagacha amal qiladi; bo‘shatish ilgari berilgan havolani muddatidan oldin bekor qilmaydi.
-- **Sotuvchi:** Sotuvlar kabinetida obyekt, kvartira, xaridor, narx va tushgan to‘lovni kiritadi; o‘z sotuvlarini tahrirlaydi. Direktor barcha sotuvlarni boshqaradi. Oddiy xodim sotuv ma’lumotlarini o‘qiy olmaydi.
+- **Sotuvchi:** Sotuvlar kabinetida obyekt, kvartira, xaridor, narx va tushgan to‘lovni kiritadi; o‘z sotuvlarini tahrirlaydi. Direktor barcha sotuvlarni kuzatadi (22-oktabr migratsiyasidan keyin faqat o‘qish). Oddiy xodim sotuv ma’lumotlarini o‘qiy olmaydi.
 
 Boshqaruv migratsiyasidan keyin eski `repair-schema.sql` ishlatilmaydi: u yangi ruxsatlarni eski versiyaga tushirmaslik uchun to‘xtaydi.
 

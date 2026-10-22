@@ -17,7 +17,7 @@ Ishchi papka: `/workspace/themelio`. Production: `npm run build`, natija `dist/`
 
 **[SUPABASE_SETUP.md](SUPABASE_SETUP.md)** qo‘llanmasini bajaring:
 
-1. SQL Editor’da `supabase/migrations/202610150001_initial.sql` migratsiyasini, keyin `202610150002_report_photos.sql` va `202610160001_fix_auth_metadata_timing.sql` va `202610160002_management_workflows.sql`, so‘ng `202610210001_site_operations.sql` migratsiyalarini ketma-ket bajaring. Barchasi `supabase/migrations/` papkasida.
+1. SQL Editor’da `supabase/migrations/202610150001_initial.sql` migratsiyasini, keyin `202610150002_report_photos.sql` va `202610160001_fix_auth_metadata_timing.sql` va `202610160002_management_workflows.sql`, so‘ng `202610210001_site_operations.sql` va `202610220001_accounting_and_workers.sql` migratsiyalarini ketma-ket bajaring. Barchasi `supabase/migrations/` papkasida.
 2. `supabase/functions/manage-members/index.ts` Edge Function’ni joylashtiring.
 3. Server kaliti bilan `npm run provision` bajarib 1 direktor + 9 xodim hisobini yarating. Parollar faqat Git’dan chiqarilgan `.private/` fayliga yoziladi.
 4. Saytda login, profil, hisobot yuborish va tasdiqlashni ikki qurilmada tekshiring.
@@ -37,12 +37,14 @@ Eski mahalliy brauzer hisoblari serverga avtomatik ko‘chirilmaydi. Supabase o�
 - Ertalabki/yakuniy hisobotlar, faqat kamerada olingan rasmlar (5 tagacha), sana filtri, direktor tasdig‘i yoki sabab bilan bekor qilish, rasmlar bilan PDF eksport. Rasmlar yopiq Supabase Storage bucketida saqlanadi.
 - Direktor obyekt yaratadi, xodimga obyekt biriktiradi; topshiriq yaratadi, tahrirlaydi va o‘chiradi. Xodim bajarilish foizini yangilaydi.
 - Xodimni ishdan bo‘shatish, qaytarish va profilini o‘chirish; tarixiy hisobotlar saqlanadi.
-- Sotuvchi kabinetida sotuv yaratish/tahrirlash, xaridor, kvartira, tushgan to‘lov va qarzdorlik. Direktor ham sotuvlarni boshqaradi.
+- Sotuvchi kabinetida sotuv yaratish/tahrirlash, xaridor, kvartira, tushgan to‘lov va qarzdorlik. Direktor sotuvlarni faqat kuzatadi.
 - Direktorning xodimga xabar yuborishi, xabarlar uchun bazada shaxsiy ruxsatlar.
 - Obyektning manzili, blok/qavat soni, tugash sanasi va yopiq PDF hujjatlari.
 - Barcha xodimlar uchun Hisobotlar, Topshiriqlar va shaxsiy Chat.
 - Omborchi: kirim/taqsimot/qaytarish; direktor: qoldiq; prorab: qoldiq va taqsimot; brigadir: faqat olingan materiallar.
-- Brigadir quruvchi va pasport rasmlarini yuboradi, prorab tasdiqlaydi. Quruvchilar uchun login yaratilmaydi.
+- Brigadir quruvchi, pasport raqami, 14 raqamli JSHSHIR va majburiy pasport rasmlarini yuboradi. Prorab tasdiqlaydi yoki ishdan bo‘shatadi; quruvchilar uchun login yaratilmaydi.
+- Hisobchi xodimlar oyligi va to‘lovlarini oy bo‘yicha yuritadi, ombor kirimlari xarajatini qayd qiladi, brigadirlardagi faol quruvchilar sonini ko‘radi. Direktor va quruvchilar oylikka kiritilmaydi.
+- Xodimlar chati: suhbatlar ro‘yxati, qidiruv, xabar pufakchalari, suhbat qoralamalari va mobil ko‘rinish.
 - Mobil ko‘rinish, qidiruv, arxiv, profil, bildirishnomalar.
 
 Galereyadan rasm tanlash yo‘q. PDF uchun Unicode shriftlar ilovaga kiritilgan; litsenziya `src/assets/DejaVu-LICENSE.txt` ichida.
