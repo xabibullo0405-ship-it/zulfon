@@ -41,7 +41,8 @@ Eski mahalliy brauzer hisoblari serverga avtomatik ko‘chirilmaydi. Supabase o�
 - Direktorning xodimga xabar yuborishi, xabarlar uchun bazada shaxsiy ruxsatlar.
 - Obyektning manzili, blok/qavat soni, tugash sanasi va yopiq PDF hujjatlari.
 - Barcha xodimlar uchun Hisobotlar, Topshiriqlar va shaxsiy Chat.
-- Omborchi: kirim/taqsimot/qaytarish; direktor: qoldiq; prorab: qoldiq va taqsimot; brigadir: faqat olingan materiallar.
+- Omborchi: yuqoridagi Kirim tugmasidan saqlangan material turini tanlash, taqsimot/qaytarish; direktor: qoldiq; prorab: qoldiq va taqsimot; brigadir: faqat olingan materiallar. Brigadirlar qo‘lidagi qoldiq qaytarishlar ayrilgan holda alohida ko‘rinadi.
+- Prorab quruvchilarni brigadir bo‘yicha saralaydi; holat yorliqlaridagi sonlar ham shu brigadirga moslanadi.
 - Brigadir quruvchi, pasport raqami, 14 raqamli JSHSHIR va majburiy pasport rasmlarini yuboradi. Prorab tasdiqlaydi yoki ishdan bo‘shatadi; quruvchilar uchun login yaratilmaydi.
 - Hisobchi xodimlar oyligi va to‘lovlarini oy bo‘yicha yuritadi, ombor kirimlari xarajatini qayd qiladi, brigadirlardagi faol quruvchilar sonini ko‘radi. Direktor va quruvchilar oylikka kiritilmaydi.
 - Xodimlar chati: suhbatlar ro‘yxati, qidiruv, xabar pufakchalari, suhbat qoralamalari va mobil ko‘rinish.

@@ -3,6 +3,15 @@
 Loyiha: `pumkmcpekrbshcvfojim`.
 Frontend uchun to‘g‘ri URL: `https://pumkmcpekrbshcvfojim.supabase.co` — `/rest/v1/` qo‘shimchasisiz.
 
+## Brigadir bo‘yicha saralash va qayta kirim (23-oktabr)
+
+Bu yangilanish uchun yangi SQL yoki Edge Function deployi kerak emas; oldingi migratsiyalar o‘rnatilgan bo‘lishi kerak.
+
+- Prorab → Quruvchilar → “Brigadir bo‘yicha saralash”: tanlangan brigadirning quruvchilari va holatlari ko‘rinadi; “Barcha brigadirlar” umumiy ro‘yxatni qaytaradi.
+- Ombor → “Brigadirlardagi materiallar”: omborchi/prorab brigadirni tanlab, undagi materiallar va berilganidan qaytarishlar ayrilgan qoldiqni ko‘radi. Brigadir faqat o‘z materiallarini ko‘radi; direktorda oldingi faqat-ombor-qoldig‘i ruxsati saqlanadi.
+- “Kirim” yuqorida, “Material qo‘shish” yonida. Mavjud tur tanlanib, kelgan miqdor yoziladi. Material turi qoldiq 0 bo‘lsa ham saqlanadi; qayta yaratish shart emas. Ataylab arxivlangan materialga kirim qilish uchun avval uni tahrirlash oynasida arxivdan chiqaring.
+- Ombor harakatlari va quruvchilar API sahifalari bo‘yicha to‘liq yuklanadi; ko‘p yozuv bo‘lsa ham eski berilgan materiallar hisobdan tushib qolmaydi.
+
 ## Hisobchi, quruvchi hujjatlari va sotuv ruxsatlari (22-oktabr)
 
 Oldingi beshta migratsiya, jumladan `202610210001_site_operations.sql`, bajarilgach **`supabase/migrations/202610220001_accounting_and_workers.sql`** faylini SQL Editor’da yangi so‘rovga to‘liq qo‘yib, bir marta Run bosing. Avval bajarilgan fayllarni takrorlamang. Yangi loyiha migratsiyalarni fayl nomi bo‘yicha ketma-ket bajaradi. Edge Function’ni o‘zgartirish talab qilinmaydi.

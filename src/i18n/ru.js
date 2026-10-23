@@ -536,5 +536,13 @@ export default {
   "Oylik yoki to‘lov miqdori noto‘g‘ri": "Неверная сумма зарплаты или оплаты",
   "Ombor kirimi topilmadi": "Поступление на склад не найдено",
   "Xarajat yoki to‘lov miqdori noto‘g‘ri": "Неверная сумма расхода или оплаты",
-  "Faqat sotuvchi sotuv kiritishi mumkin": "Только продавец может вносить продажи"
+  "Faqat sotuvchi sotuv kiritishi mumkin": "Только продавец может вносить продажи",
+  "Brigadir bo‘yicha saralash": "Фильтр по бригадиру",
+  "Barcha brigadirlar": "Все бригадиры",
+  "Faol bo‘lmagan brigadir": "Неактивный бригадир",
+  "Qo‘limdagi materiallar": "Материалы у меня",
+  "Brigadirlardagi materiallar": "Материалы у бригадиров",
+  "Berilgan materiallardan omborga qaytarilgan miqdor ayrilgan.": "Из выданного количества вычтены возвраты на склад.",
+  "Brigadir qo‘lida material qolmagan.": "У бригадира не осталось материалов.",
+  "Material turi bir marta yaratiladi. Keyingi kelgan miqdorni Kirim orqali kiriting.": "Вид материала создаётся один раз. Новое количество добавляйте через «Поступление»."
 };

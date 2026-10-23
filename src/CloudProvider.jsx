@@ -1,3 +1,4 @@
+import {pagedRows} from './lib/pagedRows';
 import {ui,getLocale} from './i18n/index.js';
 import React,{createContext,useContext,useEffect,useState,useCallback,useRef} from 'react';
 import {Building2,KeyRound,LogOut,RefreshCw,ArrowRight} from 'lucide-react';
@@ -18,7 +19,7 @@ export function CloudProvider({children,employee}){
  const refresh=useCallback(async()=>{
   if(!session)return;const request=++version.current;setLoading(true);
   try{
-   const results=await Promise.all(['members','reports','tasks','messages','projects','sales','project_documents','inventory_items','inventory_movements','construction_workers','payroll','receipt_costs'].map(table=>supabase.from(table).select('*').order('created_at',{ascending:table==='messages'})));
+   const results=await Promise.all(['members','reports','tasks','messages','projects','sales','project_documents','inventory_items','inventory_movements','construction_workers','payroll','receipt_costs'].map(table=>['inventory_movements','construction_workers'].includes(table)?pagedRows((from,to)=>supabase.from(table).select('*').order('created_at',{ascending:false}).order('id').range(from,to)):supabase.from(table).select('*').order('created_at',{ascending:table==='messages'})));
    let schemaReady=true,operationsReady=true,accountingReady=true;for(let i=0;i<results.length;i++)if(results[i].error){if(i>=4&&['42P01','PGRST205'].includes(results[i].error.code)){if(i<6)schemaReady=false;else if(i<10)operationsReady=false;else accountingReady=false;results[i]={data:[]}}else throw results[i].error;}
    if(request!==version.current)return;
    const [members,reports,tasks,messages,projects,sales,documents,inventory,movements,workers,payroll,receiptCosts]=results.map(r=>r.data);
