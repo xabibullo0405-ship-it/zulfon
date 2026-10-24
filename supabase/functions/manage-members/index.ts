@@ -38,12 +38,13 @@ Deno.serve(async(req:Request)=>{
  const {data:{user},error:authError}=await admin.auth.getUser(token);
  if(authError||!user)return reply(401,{error:'Sessiya yaroqsiz. Qayta kiring.'});
  const {data:actor,error:actorError}=await admin.from('members').select('app_role,employment_status').eq('id',user.id).single();
- if(actorError||actor?.app_role!=='director'||actor.employment_status&&actor.employment_status!=='employed')return reply(403,{error:'Faqat direktor hisob yarata oladi.'});
+ if(actorError||!['director','admin'].includes(actor?.app_role)||actor.employment_status&&actor.employment_status!=='employed')return reply(403,{error:'Hisob yaratish uchun direktor yoki admin huquqi kerak.'});
  let body;try{body=await req.json()}catch{return reply(400,{error:'Invalid JSON'})}
  if(!body||typeof body!=='object'||Array.isArray(body))return reply(400,{error:'Invalid JSON object'});
  if(body.action==='reset-password'){
   const {data:member}=await admin.from('members').select('id,login,position,status,app_role,employment_status').eq('id',body.id).single();
-  if(!member||member.app_role!=='employee'||member.employment_status&&member.employment_status!=='employed')return reply(404,{error:'Xodim topilmadi.'});
+  if(!member||!(member.app_role==='employee'||actor.app_role==='admin'&&member.app_role==='director')||member.employment_status&&member.employment_status!=='employed')return reply(404,{error:'Xodim topilmadi.'});
+  if(actor.app_role==='admin'){const {error}=await admin.from('admin_audit').insert({actor_id:user.id,target_id:member.id,action:'reset-password-request'});if(error)return reply(503,{error:'Admin tarixi yozilmadi. Qayta urinib ko‘ring.'})}
   const password=newPassword(),{error}=await admin.auth.admin.updateUserById(member.id,{password});
   if(error)return authFailure(error,'reset-password',[password,token,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'']);
   return reply(200,{account:{id:member.id,login:member.login,role:member.position,status:member.status},password});
@@ -51,9 +52,10 @@ Deno.serve(async(req:Request)=>{
  if(body.action!=='create')return reply(400,{error:'Unknown operation'});
  const position=typeof body.position==='string'?body.position.trim():'';
  if(!position||position.length>80)return reply(400,{error:'Lavozim nomini kiriting (1–80 belgi).'});
- const {count,error:countError}=await admin.from('members').select('id',{count:'exact',head:true}).neq('employment_status','deleted');
+ const {count,error:countError}=await admin.from('members').select('id',{count:'exact',head:true}).neq('employment_status','deleted').neq('app_role','admin');
  if(countError)return reply(503,{error:'Baza tayyor emas. SQL migratsiyasini tekshiring.'});
  if((count||0)>=10)return reply(409,{error:'10 ta hisob chegarasiga yetildi (1 direktor + 9 xodim).'});
+ if(actor.app_role==='admin'){const {error}=await admin.from('admin_audit').insert({actor_id:user.id,target_id:null,action:'create-account-request'});if(error)return reply(503,{error:'Admin tarixi yozilmadi. Qayta urinib ko‘ring.'})}
  const login='tm-'+random(10).toLowerCase(),password=newPassword();
  const {data,error}=await admin.auth.admin.createUser({email:login+'@accounts.themelio.invalid',password,email_confirm:true,app_metadata:{themelio_role:'employee',position,login,access_area:position.toLowerCase()==='sotuvchi'?'sales':'operations'}});
  if(error)return authFailure(error,'create',[password,token,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'']);

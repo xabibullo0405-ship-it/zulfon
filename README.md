@@ -17,7 +17,7 @@ Ishchi papka: `/workspace/themelio`. Production: `npm run build`, natija `dist/`
 
 **[SUPABASE_SETUP.md](SUPABASE_SETUP.md)** qo‘llanmasini bajaring:
 
-1. SQL Editor’da `supabase/migrations/202610150001_initial.sql` migratsiyasini, keyin `202610150002_report_photos.sql` va `202610160001_fix_auth_metadata_timing.sql` va `202610160002_management_workflows.sql`, so‘ng `202610210001_site_operations.sql` va `202610220001_accounting_and_workers.sql` migratsiyalarini ketma-ket bajaring. Barchasi `supabase/migrations/` papkasida.
+1. SQL Editor’da `supabase/migrations/202610150001_initial.sql` migratsiyasini, keyin `202610150002_report_photos.sql` va `202610160001_fix_auth_metadata_timing.sql` va `202610160002_management_workflows.sql`, so‘ng `202610210001_site_operations.sql` va `202610220001_accounting_and_workers.sql`, oxirida `202610240001_owner_admin.sql` migratsiyalarini ketma-ket bajaring. Barchasi `supabase/migrations/` papkasida.
 2. `supabase/functions/manage-members/index.ts` Edge Function’ni joylashtiring.
 3. Server kaliti bilan `npm run provision` bajarib 1 direktor + 9 xodim hisobini yarating. Parollar faqat Git’dan chiqarilgan `.private/` fayliga yoziladi.
 4. Saytda login, profil, hisobot yuborish va tasdiqlashni ikki qurilmada tekshiring.
@@ -32,6 +32,7 @@ Eski mahalliy brauzer hisoblari serverga avtomatik ko‘chirilmaydi. Supabase o�
 
 
 - Supabase login/parol va sessiya; rol bazadan aniqlanadi.
+- Loyiha egasi uchun alohida Admin: barcha hisoblar (direktor ham), kabinetlarni egasi parolisiz boshqarish, global ko‘rish va admin amallari tarixi. Admin hisobini faqat Supabase egasi `scripts/create-admin.sql` bilan yaratadi; u 10 ta ishchi hisob limitiga kirmaydi.
 - Jami 10 hisob chegarasi, direktor boshqaradigan lavozim va login-parol yaratish.
 - Xodim profilini o‘zi to‘ldiradi; yakunlangach direktor ro‘yxatida ko‘rinadi.
 - Ertalabki/yakuniy hisobotlar, faqat kamerada olingan rasmlar (5 tagacha), sana filtri, direktor tasdig‘i yoki sabab bilan bekor qilish, rasmlar bilan PDF eksport. Rasmlar yopiq Supabase Storage bucketida saqlanadi.

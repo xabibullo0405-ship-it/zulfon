@@ -5,9 +5,9 @@ import {ui,getLocale} from './i18n';
 import {AccountingNotice} from './SiteOperations';
 const money=n=>new Intl.NumberFormat(getLocale(),{maximumFractionDigits:2}).format(Number(n||0))+' '+ui('so‘m');
 export function Accounting({mode='staff'}){
- const {directory,payroll,receiptCosts,rpc,accountingReady}=useCloud();
+ const {directory,payroll,receiptCosts,rpc,queryRpc,accountingReady}=useCloud();
  const [staff,setStaff]=useState([]),[receipts,setReceipts]=useState([]),[brigades,setBrigades]=useState([]),[month,setMonth]=useState(todayCloud().slice(0,7)),[search,setSearch]=useState(''),[editing,setEditing]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[retry,setRetry]=useState(0);
- useEffect(()=>{if(!accountingReady)return;let current=true;setLoading(true);Promise.all([supabase.rpc('accounting_staff'),supabase.rpc('receipt_ledger'),supabase.rpc('brigade_headcounts')]).then(results=>{if(!current)return;const failed=results.find(r=>r.error);if(failed)throw failed.error;setStaff(results[0].data||[]);setReceipts(results[1].data||[]);setBrigades(results[2].data||[]);setError('')}).catch(e=>{if(current)setError(e.message)}).finally(()=>{if(current)setLoading(false)});return()=>{current=false}},[directory,accountingReady,retry]);
+ useEffect(()=>{if(!accountingReady)return;let current=true;setLoading(true);Promise.all([queryRpc('accounting_staff'),queryRpc('receipt_ledger'),queryRpc('brigade_headcounts')]).then(results=>{if(!current)return;const failed=results.find(r=>r.error);if(failed)throw failed.error;setStaff(results[0].data||[]);setReceipts(results[1].data||[]);setBrigades(results[2].data||[]);setError('')}).catch(e=>{if(current)setError(e.message)}).finally(()=>{if(current)setLoading(false)});return()=>{current=false}},[directory,accountingReady,retry]);
  useEffect(()=>{setEditing(null);setSearch('');setError('')},[mode]);
  const period=payroll.filter(p=>p.month===month+'-01'),cost=id=>receiptCosts.find(c=>c.receipt_id===id);
  const receiptRows=receipts.filter(r=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tashkent',year:'numeric',month:'2-digit'}).format(new Date(r.created_at))===month&&(r.item_name+' '+r.project_name).toLowerCase().includes(search.toLowerCase()));

@@ -9,7 +9,7 @@ if(!secret){console.error('SUPABASE_SERVICE_ROLE_KEY is required. Set it securel
 const output=resolve(process.env.CREDENTIALS_FILE||'.private/themelio-credentials.json');
 try{await access(output);console.error('Credentials file already exists. Choose another CREDENTIALS_FILE; existing passwords will not be overwritten.');process.exit(1)}catch(e){if(e.code!=='ENOENT')throw e}
 const admin=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
-const {data:existing,error}=await admin.from('members').select('id,login,app_role,position').neq('employment_status','deleted');
+const {data:existing,error}=await admin.from('members').select('id,login,app_role,position').neq('employment_status','deleted').neq('app_role','admin');
 if(error){console.error('Cannot read members. Apply the SQL migration and check the server key.');process.exit(1)}
 if(existing.length>10)throw new Error('Unexpected account count: more than 10');
 const positions=['Prorab','Brigada boshlig‘i','Omborchi','Hisobchi','Muhandis','Prorab','Brigada boshlig‘i','Omborchi','Sotuvchi'];

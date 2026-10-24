@@ -3,6 +3,30 @@
 Loyiha: `pumkmcpekrbshcvfojim`.
 Frontend uchun to‘g‘ri URL: `https://pumkmcpekrbshcvfojim.supabase.co` — `/rest/v1/` qo‘shimchasisiz.
 
+## Loyiha egasi uchun alohida Admin (24-oktabr)
+
+Admin — direktordan alohida, eng yuqori huquqli hisob. Bitta egasi Admin bo‘ladi; u 1 direktor + 9 xodim limitidan tashqari hisoblanadi (jami 11 gacha). Oddiy lavozim nomiga “Admin” yozish bu huquqni bermaydi. Direktor admin yaratmaydi yoki admin parolini yangilay olmaydi.
+
+O‘rnatish tartibi:
+
+1. Oldingi oltita migratsiya bajarilganidan keyin SQL Editor’da **`supabase/migrations/202610240001_owner_admin.sql`** faylini to‘liq bir marta bajaring. Mavjud direktor, xodimlar va ma’lumotlar saqlanadi.
+2. Edge Functions → `manage-members` → Code’da `index.ts`ni repozitoriydagi **`supabase/functions/manage-members/index.ts`** bilan almashtiring va **Deploy updates** bosing. Shundan keyin Admin direktor va xodim parolini qayta bera oladi. Admin hisobi oddiy lavozim yaratish orqali yaratilmaydi.
+3. SQL Editor → New query’da **`scripts/create-admin.sql`** faylini to‘liq bajaring. **Results → login = admin, new_password** ustunlari chiqadi. Yangi parolni faqat egasi xavfsiz saqlaydi; chatga yoki Git’ga yubormang.
+4. Vercel yangi kodni deploy qilgach odatdagi saytda shu login-parol bilan kiring. Admin kabineti avtomatik ochiladi. Direktor hisobini uning egasiga, har bir xodim hisobini tegishli odamga topshiring. Oldingi login-parollar o‘zgarishsiz qoladi.
+
+`create-admin.sql`ni qayta bajarish mavjud admin parolini o‘zgartirmaydi. Parol yo‘qolsa, Supabase loyihasi egasi **`scripts/reset-admin.sql`**ni SQL Editor’da bajarib yangi parol oladi. Ushbu SQL fayllar vaqtinchalik helper va pgcrypto orqali ishonchli administrator muhitida ishlaydi; ommaviy parol o‘rnatish RPCsi yaratilmaydi.
+
+Admin kabinetida:
+
+- **Hisoblar:** direktor va barcha xodimlarni ko‘rish, lavozim/obyektni almashtirish, kirishni to‘xtatish/qaytarish, login uchun yangi parol olish va xodim yaratish. Adminning o‘zini boshqa kabinetlar o‘chira yoki o‘zgartira olmaydi. Yagona direktor profilini o‘chirish yopiq; uni boshqa odamga topshirish uchun kabinetida shaxsiy ma’lumotlarini yangilang va parolini almashtiring.
+- **Kabinetni ochish:** direktor, omborchi, prorab, brigadir, hisobchi yoki sotuvchining aynan shu kabinetidagi barcha funksiyalar bilan ishlash. Login-parolini bilish shart emas. Yuqorida “Admin boshqaruvi” belgisi turadi. “Admin kabinetiga qaytish” yoki preview ichidagi Chiqish sizni Admin’ga qaytaradi; Admin bosh sahifasidagi Chiqish haqiqiy sessiyani tugatadi.
+- **Obyektlar va Umumiy nazorat:** barcha obyektlar/hujjatlar, hisobotlar va umumiy yozuvlar. Ombor, quruvchi, sotuv va moliyaviy o‘zgartirishlar uchun tegishli lavozim kabinetini oching. Shu sabab real ishni sinashdan oldin kerakli lavozimlar yaratilgan va obyektga biriktirilgan bo‘lishi kerak.
+- **Admin tarixi:** oxirgi 200 ta ochilgan kabinet va bajarilgan amal. Muvaffaqiyatli ilova amallari bazadagi o‘zgarish bilan bir tranzaksiyada yoziladi. Parol almashtirish/hisob yaratish server urinishlari Auth amalidan avval yoziladi; parol yoki pasport matni jurnalga kiritilmaydi.
+
+Texnik ruxsatlar: haqiqiy JWT hamisha Adminniki qoladi, boshqa odamning sessiyasi/paroli olinmaydi. `admin_act` faqat Admin uchun va aniq RPC imzolari ro‘yxati bilan ishlaydi; maqsad hisob transaction-local kontekstda beriladi. Alohida tablar bir-birining tanlangan kabinetini almashtirmaydi. Oddiy foydalanuvchi bu kontekstni soxtalashtirsa ham o‘z huquqidan chiqmaydi. Admin haqiqiy egasi sifatida barcha loyiha ma’lumotlarini, jumladan moliyaviy yozuvlar, hisobot rasmlari, xodimlar o‘rtasidagi chatlar va quruvchilarning pasport hujjatlarini ko‘ra oladi; foydalanuvchilarni bu boshqaruv tartibidan xabardor qiling. Direktor/xodimlarning avvalgi rol cheklovlari saqlanadi.
+
+Git push SQL, Edge deploy yoki admin hisobini avtomatik yaratmaydi. Mahalliy testlarda SQL ruxsatlari/crypto stublari va mock Auth tekshiriladi; haqiqiy Supabase loginini yuqoridagi amallardan keyin sinang.
+
 ## Brigadir bo‘yicha saralash va qayta kirim (23-oktabr)
 
 Bu yangilanish uchun yangi SQL yoki Edge Function deployi kerak emas; oldingi migratsiyalar o‘rnatilgan bo‘lishi kerak.

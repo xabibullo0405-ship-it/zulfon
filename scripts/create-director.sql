@@ -22,7 +22,7 @@ begin
    'Direktor hisobi allaqachon bor. Parol o‘zgartirilmadi; reset-director.sql faylidan foydalaning.'::text;
   return;
  end if;
- if (select count(*) from public.members)>=10 then
+ if (select count(*) from public.members where app_role<>'admin')>=10 then
   raise exception '10 ta hisob chegarasiga yetilgan. Hech qanday hisob o‘zgartirilmadi.';
  end if;
  select u.id into v_user_id from auth.users u where lower(u.email)='direktor@accounts.themelio.invalid';

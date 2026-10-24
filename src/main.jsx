@@ -1,3 +1,4 @@
+import {AdminConsole} from './AdminConsole';
 import {Warehouse} from './SiteOperations';
 import {LanguageRoot} from './i18n/LanguageRoot.jsx';
 import {getLocale} from './i18n/index.js';
@@ -88,4 +89,4 @@ function App(){
 function Stat({icon:Icon,color,label,value,unit,foot,link}){return <section className="stat-card"><div className="stat-top"><span>{ui(label)}</span><span className={`stat-icon ${color}`}><Icon size={20}/></span></div><div className="stat-value">{ui(value)}<span>{ui(unit)}</span></div><div className="stat-foot"><span>{ui(foot)}</span>{ui(link&&<button className="icon-btn" aria-label={ui("Hisobotni tekshirish")} onClick={link}><ArrowUpRight size={16}/></button>)}</div></section>}
 
 
-createRoot(document.getElementById('root')).render(<LanguageRoot render={()=> <CloudProvider employee={<EmployeeCabinet/>}><App/></CloudProvider>}/>);
+createRoot(document.getElementById('root')).render(<LanguageRoot render={()=> <CloudProvider admin={<AdminConsole directorCabinet={<App/>}/>} employee={<EmployeeCabinet/>}><App/></CloudProvider>}/>);

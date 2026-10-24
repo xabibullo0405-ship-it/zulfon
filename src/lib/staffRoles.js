@@ -1,4 +1,5 @@
 export function staffRole(member){
+ if(member.app_role==='admin')return 'admin';
  if(member.app_role==='director')return 'director';
  const position=member.position?.trim().toLowerCase();
  if(['hisobchi','бухгалтер'].includes(position))return 'accountant';

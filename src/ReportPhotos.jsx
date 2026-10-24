@@ -45,7 +45,7 @@ export function ReportPhotoGallery({paths=[]}){
  if(!paths.length)return null;
  return <section className="report-photo-gallery"><h3><ImageIcon size={17}/>{ui("Hisobot rasmlari ")}<span className="number-chip">{ui(paths.length)}</span></h3>{ui(error?<div className="photo-load-error"><p role="alert">{ui(error)}</p><button className="btn" onClick={()=>setRetry(n=>n+1)}><RotateCcw size={14}/>{ui("Qayta yuklash")}</button></div>:urls.length?<div className="photo-grid">{ui(urls.map((url,i)=><a key={paths[i]} href={url} target="_blank" rel="noreferrer" aria-label={ui(`${i+1} — ${ui('rasmni katta ko‘rish')}`)}><img src={url} alt={ui(`${ui('Hisobot rasmlari')} ${i+1}`)} loading="lazy" onError={()=>setError('Rasm havolasi eskirgan yoki rasmni yuklab bo‘lmadi. Qayta yuklang.')}/></a>))}</div>:<p className="muted">{ui("Rasmlar yuklanmoqda...")}</p>)}</section>;
 }
-export async function submitReportWithPhotos({userId,submissionId,photos,fields,onProgress}){
+export async function submitReportWithPhotos({userId,submissionId,photos,fields,onProgress,callRpc=(name,args)=>supabase.rpc(name,args)}){
  if(photos.length>MAX_PHOTOS)throw new Error('Bitta hisobotga 5 tagacha rasm qo‘shish mumkin.');
  // An ambiguous response after commit must not create a duplicate on retry.
  const existing=await supabase.from('reports').select('id').eq('id',submissionId).maybeSingle();
@@ -62,7 +62,7 @@ export async function submitReportWithPhotos({userId,submissionId,photos,fields,
    if(error&&String(error.statusCode)!=='409')throw new Error('Rasm yuklanmadi. Storage sozlamalari va internetni tekshiring. Hisobot saqlanmagan bo‘lsa, qayta urinishingiz mumkin.');
   }
   onProgress?.('Hisobot saqlanmoqda...');
-  const {data,error}=await supabase.rpc('submit_report_with_photos',{p_id:submissionId,...fields,p_paths:uploaded});
+  const {data,error}=await callRpc('submit_report_with_photos',{p_id:submissionId,...fields,p_paths:uploaded});
   if(error)throw new Error(error.message);
   return data;
  }catch(error){

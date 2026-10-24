@@ -4,10 +4,10 @@ import vm from 'node:vm';
 import {webcrypto} from 'node:crypto';
 import assert from 'node:assert/strict';
 let actorEmployment='employed',targetEmployment='employed';
-let role='director',count=2,created=null,reset=null,authError=null;
-const client={auth:{getUser:async token=>({data:{user:token==='invalid'?null:{id:'actor'}},error:null}),admin:{createUser:async data=>{created=data;return authError?{data:{user:null},error:authError}:{data:{user:{id:'created-id'}},error:null}},updateUserById:async(id,data)=>{reset={id,...data};return {error:authError}}}},from:()=>({select:(_columns,options)=>{
- if(options?.count)return {neq:()=>Promise.resolve({count,error:null})};
- return {eq:(_column,value)=>({single:async()=>value==='actor'?{data:{app_role:role,employment_status:actorEmployment},error:null}:{data:{id:value,login:'xodim01',position:'Muhandis',status:'pending',employment_status:targetEmployment,app_role:value==='director-id'?'director':'employee'},error:null}})};
+let role='director',count=2,created=null,reset=null,authError=null,auditError=null;
+const client={auth:{getUser:async token=>({data:{user:token==='invalid'?null:{id:'actor'}},error:null}),admin:{createUser:async data=>{created=data;return authError?{data:{user:null},error:authError}:{data:{user:{id:'created-id'}},error:null}},updateUserById:async(id,data)=>{reset={id,...data};return {error:authError}}}},from:()=>({insert:async()=>({error:auditError}),select:(_columns,options)=>{
+ if(options?.count)return {neq(){return this},then(resolve,reject){return Promise.resolve({count,error:null}).then(resolve,reject)}};
+ return {eq:(_column,value)=>({single:async()=>value==='actor'?{data:{app_role:role,employment_status:actorEmployment},error:null}:{data:{id:value,login:'xodim01',position:'Muhandis',status:'pending',employment_status:targetEmployment,app_role:value==='admin-id'?'admin':value==='director-id'?'director':'employee'},error:null}})};
 }})};
 let handler;
 let source=await readFile(new URL('../supabase/functions/manage-members/index.ts',import.meta.url),'utf8');
@@ -23,6 +23,7 @@ count=2;assert.equal((await request('director',{action:'create',position:' '})).
 const response=await request('director',{action:'create',position:'Muhandis',app_role:'director'});assert.equal(response.status,200);
 const result=await response.json();assert.equal(created.app_metadata.themelio_role,'employee');assert.equal(created.app_metadata.position,'Muhandis');assert.equal(created.email_confirm,true);assert.equal(created.password.length,24);for(const pattern of [/[A-Z]/,/[a-z]/,/[0-9]/,/[^A-Za-z0-9]/])assert.match(created.password,pattern);assert.equal(result.password,created.password);assert.equal(response.headers.get('Cache-Control'),'no-store');
 assert.equal((await request('director',{action:'reset-password',id:'director-id'})).status,404);assert.equal(reset,null);
+role='admin';assert.equal((await request('admin',{action:'reset-password',id:'director-id'})).status,200);assert.equal((await request('admin',{action:'reset-password',id:'admin-id'})).status,404);auditError={message:'Audit unavailable'};const previousReset=reset;assert.equal((await request('admin',{action:'reset-password',id:'director-id'})).status,503);assert.equal(reset,previousReset);auditError=null;assert.equal(reset.id,'director-id');role='director';
 const resetResponse=await request('director',{action:'reset-password',id:'employee-id'});assert.equal(resetResponse.status,200);assert.equal(reset.id,'employee-id');assert.equal(reset.password.length,24);for(const pattern of [/[A-Z]/,/[a-z]/,/[0-9]/,/[^A-Za-z0-9]/])assert.match(reset.password,pattern);
 actorEmployment='dismissed';assert.equal((await request('director',{action:'create',position:'Prorab'})).status,403);actorEmployment='employed';
 targetEmployment='deleted';assert.equal((await request('director',{action:'reset-password',id:'employee-id'})).status,404);targetEmployment='employed';
