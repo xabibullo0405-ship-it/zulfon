@@ -82,6 +82,7 @@ try{
    return send({account:{id:account.id,login:account.login,role:account.position,status:'pending'},password:'fixture-password'});
   }
   const table=path.split('/').pop();
+  if(table==='receipt_costs'&&new URL(req.url()).searchParams.get('order')?.split(',').some(order=>order.startsWith('id.')))return send({code:'42703',message:'column receipt_costs.id does not exist'},400);
   let rows=state[table];if(!rows)return send({},404);const exactId=new URL(req.url()).searchParams.get('id');if(exactId?.startsWith('eq.'))rows=rows.filter(row=>row.id===exactId.slice(3));
   if(me.employment_status!=='employed')return send(table==='members'?rows.filter(r=>r.id===id):[]);
 

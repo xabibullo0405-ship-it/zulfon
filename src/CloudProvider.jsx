@@ -20,7 +20,7 @@ export function CloudProvider({children,employee,admin}){
  const refresh=useCallback(async()=>{
   if(!session)return;const request=++version.current;setLoading(true);
   try{
-   const results=await Promise.all(['members','reports','tasks','messages','projects','sales','project_documents','inventory_items','inventory_movements','construction_workers','payroll','receipt_costs'].map(table=>pagedRows((from,to)=>supabase.from(table).select('*').order('created_at',{ascending:table==='messages'}).order('id').range(from,to))));
+   const results=await Promise.all(['members','reports','tasks','messages','projects','sales','project_documents','inventory_items','inventory_movements','construction_workers','payroll','receipt_costs'].map(table=>{const key=table==='receipt_costs'?'receipt_id':'id';return pagedRows((from,to)=>supabase.from(table).select('*').order('created_at',{ascending:table==='messages'}).order(key).range(from,to),500,key)}));
    let schemaReady=true,operationsReady=true,accountingReady=true;for(let i=0;i<results.length;i++)if(results[i].error){if(i>=4&&['42P01','PGRST205'].includes(results[i].error.code)){if(i<6)schemaReady=false;else if(i<10)operationsReady=false;else accountingReady=false;results[i]={data:[]}}else throw results[i].error;}
    if(request!==version.current)return;
    const [members,reports,tasks,messages,projects,sales,documents,inventory,movements,workers,payroll,receiptCosts]=results.map(r=>r.data);

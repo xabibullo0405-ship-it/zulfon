@@ -11,3 +11,7 @@ const ledger=Array.from({length:1001},(_,i)=>({...m('one','x',i===1000?'issue':'
 const full=await pagedRows(async(from,to)=>({data:ledger.slice(from,to+1)}));
 assert.equal(full.data.length,1001);assert.equal(brigadeBalances(full.data)[0].quantity,1,'Older issues beyond the API default limit must be counted');
 const failure={error:{message:'Access denied'}};assert.equal(await pagedRows(async()=>failure),failure);
+
+const costs=[{receipt_id:'first',total:100},{receipt_id:'second',total:200},{receipt_id:'third',total:300}];
+const pagedCosts=await pagedRows(async(from,to)=>({data:costs.slice(from,to+1)}),2,'receipt_id');
+assert.deepEqual(pagedCosts.data,costs,'Receipt costs without id must retain every record across pages');
