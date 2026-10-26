@@ -1,3 +1,4 @@
+import {BrandLogo} from './BrandLogo';
 import {AdminConsole} from './AdminConsole';
 import {Warehouse} from './SiteOperations';
 import {LanguageRoot} from './i18n/LanguageRoot.jsx';
@@ -26,7 +27,7 @@ const displayDate = (value=today()) => new Date(value+'T12:00:00').toLocaleDateS
 const initials = (name='') => name.trim().split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('').toUpperCase();
 const nav=[['reports','Hisobotlar',LayoutDashboard],['projects','Obyektlar',Building2],['people','Xodimlar',Users],['tasks','Topshiriqlar',ClipboardList],['sales','Sotuvlar',ChartNoAxesCombined],['warehouse','Ombor',Building2],['archive','Arxiv',FolderClosed],['chat','Chat',MessagesSquare]];
 function Avatar({person,size=''}){return <span className={`avatar ${person?.color||'mint'} ${size}`}>{ui(person?.initials||<Users size={18}/>)}</span>}
-function Logo(){return <div className="brand"><svg viewBox="0 0 40 44" fill="none"><path d="M3 39V18L13 12V39M15 39V7L26 2V39M28 39V15L36 19V39" stroke="currentColor" strokeWidth="3.4"/><path d="M1 42H39" stroke="currentColor" strokeWidth="2"/></svg><div>ZULFON<span>{ui("Qurilishni birga boshqaramiz")}</span></div></div>}
+function Logo(){return <BrandLogo className="sidebar-brand"/>}
 const SearchBox=({query,setQuery,placeholder='Xodim yoki hisobotni qidirish...'})=><div className="search"><Search size={17}/><input aria-label={ui("Qidirish")} placeholder={ui(placeholder)} value={query} onChange={e=>setQuery(e.target.value)}/>{ui(query&&<button aria-label={ui("Qidiruvni tozalash")} onClick={()=>setQuery('')}><X size={14}/></button>)}<kbd>⌘ K</kbd></div>;
 function App(){
  const [page,setPage]=useState('reports'),[project,setProject]=useState(''),[query,setQuery]=useState(''),[tab,setTab]=useState('morning'),[taskTab,setTaskTab]=useState('progress'),[role,setRole]=useState('all'),[saleStatus,setSaleStatus]=useState('all'),[sidebar,setSidebar]=useState(false),[notifications,setNotifications]=useState(false),[modal,setModal]=useState(null),[toast,setToast]=useState(''),[period,setPeriod]=useState('week'),[reportDate,setReportDate]=useState(today());
