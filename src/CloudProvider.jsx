@@ -50,7 +50,7 @@ export function CloudProvider({children,employee,admin}){
  const people=allPeople.filter(m=>m.employment==='employed'&&snapshot.members.find(row=>row.id===m.id)?.status==='active');
  const reports=snapshot.reports.map(r=>({id:r.id,person:r.author_id,title:r.title,text:r.body,type:r.report_type,date:r.report_date,time:time(r.created_at),status:r.status,project:r.project_id||'',photos:r.photo_paths||[],rejectionReason:r.rejection_reason||''}));
  const tasks=snapshot.tasks.map(t=>({id:t.id,title:t.title,description:t.description,person:t.assignee_id,due:t.due_date,priority:t.priority,progress:t.progress,projectId:t.project_id||'',status:t.progress===100?'done':t.due_date<todayCloud()?'late':t.status}));
- const messages=snapshot.messages.map(m=>({id:m.id,conversation:m.sender_id===session.user.id?m.recipient_id:m.sender_id,text:m.body,time:time(m.created_at),createdAt:m.created_at,incoming:m.sender_id!==session.user.id}));
+ const messages=snapshot.messages.filter(m=>m.sender_id===session.user.id||m.recipient_id===session.user.id).map(m=>({id:m.id,conversation:m.sender_id===session.user.id?m.recipient_id:m.sender_id,text:m.body,time:time(m.created_at),createdAt:m.created_at,incoming:m.sender_id!==session.user.id}));
  const accounts=snapshot.members.filter(m=>m.app_role==='employee'&&m.employment_status!=='deleted').map(m=>({id:m.id,login:m.login,role:m.position,status:m.status,employment:m.employment_status||'employed'}));
  const profile={name:snapshot.me.name,email:snapshot.me.contact_email,notify:true};
  const saveProfile=async(details)=>rpc('complete_profile',{p_name:details.name,p_phone:details.phone||'',p_email:details.email,p_address:details.address||'',p_birth_date:details.birthDate||null});

@@ -50,14 +50,19 @@ Deno.serve(async(req:Request)=>{
   return reply(200,{account:{id:member.id,login:member.login,role:member.position,status:member.status},password});
  }
  if(body.action!=='create')return reply(400,{error:'Unknown operation'});
- const position=typeof body.position==='string'?body.position.trim():'';
+ if(body.account_role!==undefined&&!['employee','director'].includes(body.account_role))return reply(400,{error:'Invalid account role'});
+ const directorRequested=body.account_role==='director';
+ if(directorRequested&&actor.app_role!=='admin')return reply(403,{error:'Faqat admin direktor hisobini yarata oladi.'});
+ const accountRole=directorRequested?'director':'employee';
+ if(directorRequested){const {count,error}=await admin.from('members').select('id',{count:'exact',head:true}).eq('app_role','director').neq('employment_status','deleted');if(error)return reply(503,{error:'Baza tayyor emas. SQL migratsiyasini tekshiring.'});if(count)return reply(409,{error:'Direktor hisobi bor. Avval uni boshqaring yoki o‘chiring.'})}
+ const position=directorRequested?'Direktor':typeof body.position==='string'?body.position.trim():'';
  if(!position||position.length>80)return reply(400,{error:'Lavozim nomini kiriting (1–80 belgi).'});
  const {count,error:countError}=await admin.from('members').select('id',{count:'exact',head:true}).neq('employment_status','deleted').neq('app_role','admin');
  if(countError)return reply(503,{error:'Baza tayyor emas. SQL migratsiyasini tekshiring.'});
  if((count||0)>=10)return reply(409,{error:'10 ta hisob chegarasiga yetildi (1 direktor + 9 xodim).'});
  if(actor.app_role==='admin'){const {error}=await admin.from('admin_audit').insert({actor_id:user.id,target_id:null,action:'create-account-request'});if(error)return reply(503,{error:'Admin tarixi yozilmadi. Qayta urinib ko‘ring.'})}
  const login='tm-'+random(10).toLowerCase(),password=newPassword();
- const {data,error}=await admin.auth.admin.createUser({email:login+'@accounts.themelio.invalid',password,email_confirm:true,app_metadata:{themelio_role:'employee',position,login,access_area:position.toLowerCase()==='sotuvchi'?'sales':'operations'}});
+ const {data,error}=await admin.auth.admin.createUser({email:login+'@accounts.themelio.invalid',password,email_confirm:true,app_metadata:{themelio_role:accountRole,position,login,access_area:accountRole==='employee'&&position.toLowerCase()==='sotuvchi'?'sales':'operations'}});
  if(error)return authFailure(error,'create',[password,token,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'']);
  if(!data.user)return reply(503,{error:'Auth foydalanuvchi ma’lumotini qaytarmadi.',error_code:'missing_user'});
  return reply(200,{account:{id:data.user.id,login,role:position,status:'pending'},password});

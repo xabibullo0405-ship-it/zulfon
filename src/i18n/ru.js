@@ -1,4 +1,5 @@
 export default {
+  "Chatdan foydalanish uchun profilingizni to‘ldiring.": "Для использования чата заполните профиль.",
   "Hisob yaratish uchun direktor yoki admin huquqi kerak.": "Для создания учётной записи нужны права директора или администратора.",
   "Harakat mavjud: o‘lchov birligini o‘zgartirib bo‘lmaydi": "Есть операции: единицу измерения изменить нельзя",
   "DIREKTOR VA XODIMLAR UCHUN": "ДЛЯ ДИРЕКТОРА И СОТРУДНИКОВ",
@@ -609,5 +610,21 @@ export default {
   "Miqdor qo‘lingizdagi qoldiqdan oshmasligi kerak": "Количество не должно превышать остаток у вас",
   "Material qoldig‘i mos kelmadi. Qayta tekshiring.": "Остаток материала не совпал. Проверьте снова.",
   "Material sarfi qayd etildi": "Расход материала записан",
-  "Material sarfi uchun 202610260001_material_usage.sql migratsiyasini bajaring.": "Для расхода материалов выполните миграцию 202610260001_material_usage.sql."
+  "Material sarfi uchun 202610260001_material_usage.sql migratsiyasini bajaring.": "Для расхода материалов выполните миграцию 202610260001_material_usage.sql.",
+  "Foydalanuvchini o‘chirish": "Удалить пользователя",
+  "Parolni yangilash": "Сменить пароль",
+  "Kirish bloklanadi va shaxsiy profil tozalanadi. Hisobotlar, chatlar va hisob-kitob tarixi saqlanadi. Profilni qaytarib bo‘lmaydi.": "Доступ будет заблокирован, личный профиль очищен. Отчёты, переписка и история расчётов сохранятся. Восстановить профиль нельзя.",
+  "Hozirgi parolni ko‘rish mumkin emas. Tasdiqlasangiz, u yangi parolga almashtiriladi. Yangi parol shu oynada ko‘rsatiladi.": "Текущий пароль посмотреть нельзя. После подтверждения он будет заменён новым, который появится в этом окне.",
+  "Keyin Lavozim yaratish orqali yangi direktor hisobini yarata olasiz.": "Затем через создание должности можно создать новую учётную запись директора.",
+  "Yangi parol yaratish": "Создать новый пароль",
+  "Foydalanuvchilarni o‘chirish uchun 202610260002_account_removal.sql migratsiyasini bajaring.": "Для удаления пользователей выполните миграцию 202610260002_account_removal.sql.",
+  "Foydalanuvchi o‘chirildi": "Пользователь удалён",
+  "Hisob turi": "Тип учётной записи",
+  "Faqat admin direktor hisobini yarata oladi.": "Только администратор может создать учётную запись директора.",
+  "Direktor hisobi bor. Avval uni boshqaring yoki o‘chiring.": "Учётная запись директора уже существует. Сначала измените или удалите её.",
+  "Admin hisobini o‘chirish mumkin emas": "Нельзя удалить учётную запись администратора",
+  "Faol bo‘lmagan foydalanuvchi": "Неактивный пользователь",
+  "Bu hisob faol emas. Faqat chat tarixi ko‘rinadi.": "Учётная запись неактивна. Доступна только история переписки.",
+  "O‘chirilgan foydalanuvchi": "Удалённый пользователь",
+  "Parol yangilandi": "Пароль обновлён"
 };
