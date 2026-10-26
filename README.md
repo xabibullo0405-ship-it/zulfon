@@ -17,7 +17,7 @@ Ishchi papka: `/workspace/themelio`. Production: `npm run build`, natija `dist/`
 
 **[SUPABASE_SETUP.md](SUPABASE_SETUP.md)** qo‘llanmasini bajaring:
 
-1. SQL Editor’da `supabase/migrations/202610150001_initial.sql` migratsiyasini, keyin `202610150002_report_photos.sql` va `202610160001_fix_auth_metadata_timing.sql` va `202610160002_management_workflows.sql`, so‘ng `202610210001_site_operations.sql` va `202610220001_accounting_and_workers.sql`, oxirida `202610240001_owner_admin.sql` migratsiyalarini ketma-ket bajaring. Barchasi `supabase/migrations/` papkasida.
+1. SQL Editor’da `supabase/migrations/202610150001_initial.sql` migratsiyasini, keyin `202610150002_report_photos.sql` va `202610160001_fix_auth_metadata_timing.sql` va `202610160002_management_workflows.sql`, so‘ng `202610210001_site_operations.sql` va `202610220001_accounting_and_workers.sql`, keyin `202610240001_owner_admin.sql` va `202610260001_material_usage.sql` migratsiyalarini ketma-ket bajaring. Barchasi `supabase/migrations/` papkasida.
 2. `supabase/functions/manage-members/index.ts` Edge Function’ni joylashtiring.
 3. Server kaliti bilan `npm run provision` bajarib 1 direktor + 9 xodim hisobini yarating. Parollar faqat Git’dan chiqarilgan `.private/` fayliga yoziladi.
 4. Saytda login, profil, hisobot yuborish va tasdiqlashni ikki qurilmada tekshiring.
@@ -43,6 +43,7 @@ Eski mahalliy brauzer hisoblari serverga avtomatik ko‘chirilmaydi. Supabase o�
 - Obyektning manzili, blok/qavat soni, tugash sanasi va yopiq PDF hujjatlari.
 - Barcha xodimlar uchun Hisobotlar, Topshiriqlar va shaxsiy Chat.
 - Omborchi: yuqoridagi Kirim tugmasidan saqlangan material turini tanlash, taqsimot/qaytarish; direktor: qoldiq; prorab: qoldiq va taqsimot; brigadir: faqat olingan materiallar. Brigadirlar qo‘lidagi qoldiq qaytarishlar ayrilgan holda alohida ko‘rinadi.
+- Brigadir o‘ziga berilgan materialni “Ishlatildi” orqali sarfga chiqaradi: qoldiq kamayadi, izoh va tarix saqlanadi; ombor qoldig‘i qayta o‘zgarmaydi.
 - Prorab quruvchilarni brigadir bo‘yicha saralaydi; holat yorliqlaridagi sonlar ham shu brigadirga moslanadi.
 - Brigadir quruvchi, pasport raqami, 14 raqamli JSHSHIR va majburiy pasport rasmlarini yuboradi. Prorab tasdiqlaydi yoki ishdan bo‘shatadi; quruvchilar uchun login yaratilmaydi.
 - Hisobchi xodimlar oyligi va to‘lovlarini oy bo‘yicha yuritadi, ombor kirimlari xarajatini qayd qiladi, brigadirlardagi faol quruvchilar sonini ko‘radi. Direktor va quruvchilar oylikka kiritilmaydi.

@@ -597,5 +597,17 @@ export default {
   "Hujjat biriktirildi": "Документ прикреплён",
   "Hujjat o‘chirildi": "Документ удалён",
   "Xodim holati o‘zgartirildi": "Статус сотрудника изменён",
-  "Amal bajarildi": "Действие выполнено"
+  "Amal bajarildi": "Действие выполнено",
+  "Ishlatildi": "Израсходовано",
+  "Material ishlatildi": "Расход материала",
+  "Ishlatilgan miqdor": "Израсходованное количество",
+  "Qayerda ishlatildi?": "Где использовано?",
+  "Sarfni tasdiqlash": "Подтвердить расход",
+  "Bu miqdor qo‘lingizdagi materialdan ayriladi. Sarf tarixi saqlanadi.": "Это количество будет списано с материалов у вас. История расхода сохранится.",
+  "Berilgan materiallardan qaytarilgan va ishlatilgan miqdor ayrilgan.": "Из выданных материалов вычтены возвраты и расход.",
+  "Material qayerda ishlatilganini yozing": "Укажите, где использован материал",
+  "Miqdor qo‘lingizdagi qoldiqdan oshmasligi kerak": "Количество не должно превышать остаток у вас",
+  "Material qoldig‘i mos kelmadi. Qayta tekshiring.": "Остаток материала не совпал. Проверьте снова.",
+  "Material sarfi qayd etildi": "Расход материала записан",
+  "Material sarfi uchun 202610260001_material_usage.sql migratsiyasini bajaring.": "Для расхода материалов выполните миграцию 202610260001_material_usage.sql."
 };

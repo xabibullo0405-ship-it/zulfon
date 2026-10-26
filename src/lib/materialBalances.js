@@ -2,7 +2,7 @@
 export function brigadeBalances(movements){
  const result=new Map();
  for(const m of movements){
-  if(!m.brigadier_id||!['issue','return'].includes(m.kind))continue;
+  if(!m.brigadier_id||!['issue','return','usage'].includes(m.kind))continue;
   const key=m.brigadier_id+':'+m.item_id;
   const row=result.get(key)||{brigadierId:m.brigadier_id,itemId:m.item_id,quantity:0};
   row.quantity+=(m.kind==='issue'?1:-1)*Math.round(Number(m.quantity)*1000);result.set(key,row);

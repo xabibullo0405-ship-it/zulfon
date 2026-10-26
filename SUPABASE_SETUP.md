@@ -3,6 +3,16 @@
 Loyiha: `pumkmcpekrbshcvfojim`.
 Frontend uchun to‘g‘ri URL: `https://pumkmcpekrbshcvfojim.supabase.co` — `/rest/v1/` qo‘shimchasisiz.
 
+## Brigadir material sarfi (26-oktabr)
+
+Oldingi yettita migratsiya, jumladan `202610240001_owner_admin.sql`, bajarilgan bo‘lsa, **`supabase/migrations/202610260001_material_usage.sql`** faylini SQL Editor’da yangi so‘rovga to‘liq qo‘yib, bir marta Run bosing. Eski fayllarni takrorlamang. Edge Function yoki login-parollarni o‘zgartirish kerak emas.
+
+Brigadir → Ombor → “Qo‘limdagi materiallar” → material yonidagi **Ishlatildi**. Ishlatilgan miqdor va qayerda ishlatilgani kiritiladi, so‘ng “Sarfni tasdiqlash” bosiladi. Qoldiqdan ortiq sarf kiritilmaydi. To‘liq ishlatilgan material joriy qoldiq ro‘yxatidan chiqadi, lekin berish/qaytarish/sarf tarixi saqlanadi. Material turi katalogdan o‘chmaydi.
+
+Sarf faqat brigadirning shu obyekt bo‘yicha o‘ziga berilgan materialidan ayriladi. Ombordagi qoldiq o‘zgarmaydi, chunki bu material oldin brigadirga berilganda ombordan chiqqan. Omborchi va prorab sarfni “Materiallar harakati”da, qoldiqni “Brigadirlardagi materiallar”da ko‘radi; direktorning oldingi faqat ombor qoldig‘i ruxsati saqlanadi. Admin brigadir kabinetini ochib shu amalni bajara oladi va bu admin tarixiga yoziladi.
+
+SQL miqdor/obyekt/egalikni tekshiradi. Bitta sarf bir nechta avvalgi berishlardan FIFO tartibida olinishi mumkin; har bir qism tegishli berish yozuviga bog‘lanadi. Qaytarish va sarf bir xil material qatori qulfi ostida hisoblanadi: sarflangan materialni yana omborga qaytarish mumkin emas. Bir xil operatsiya identifikatori bilan takroriy so‘rov sarfni ikki marta ayirmaydi. Sarf yozuvlari mijoz tomonidan o‘chirilmaydi.
+
 ## Loyiha egasi uchun alohida Admin (24-oktabr)
 
 Admin — direktordan alohida, eng yuqori huquqli hisob. Bitta egasi Admin bo‘ladi; u 1 direktor + 9 xodim limitidan tashqari hisoblanadi (jami 11 gacha). Oddiy lavozim nomiga “Admin” yozish bu huquqni bermaydi. Direktor admin yaratmaydi yoki admin parolini yangilay olmaydi.
