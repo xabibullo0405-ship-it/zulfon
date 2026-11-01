@@ -37,10 +37,34 @@ Deno.serve(async(req:Request)=>{
  const admin=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false,autoRefreshToken:false}});
  const {data:{user},error:authError}=await admin.auth.getUser(token);
  if(authError||!user)return reply(401,{error:'Sessiya yaroqsiz. Qayta kiring.'});
- const {data:actor,error:actorError}=await admin.from('members').select('app_role,employment_status').eq('id',user.id).single();
- if(actorError||!['director','admin'].includes(actor?.app_role)||actor.employment_status&&actor.employment_status!=='employed')return reply(403,{error:'Hisob yaratish uchun direktor yoki admin huquqi kerak.'});
+ const {data:actor,error:actorError}=await admin.from('members').select('app_role,employment_status,status,access_area').eq('id',user.id).single();
+ if(actorError||!actor||actor.employment_status&&actor.employment_status!=='employed')return reply(403,{error:'Hisob faol emas.'});
  let body;try{body=await req.json()}catch{return reply(400,{error:'Invalid JSON'})}
  if(!body||typeof body!=='object'||Array.isArray(body))return reply(400,{error:'Invalid JSON object'});
+ if(body.action==='create-customer'){
+  if(actor.app_role!=='employee'||actor.access_area!=='sales'||actor.status!=='active')return reply(403,{error:'Mijoz kabinetini faqat faol sotuvchi yaratadi.'});
+  if(typeof body.sale_id!=='string'||! /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.sale_id))return reply(400,{error:'Sotuvni tanlang.'});
+  const {data:sale,error:saleError}=await admin.from('sales').select('id').eq('id',body.sale_id).eq('seller_id',user.id).maybeSingle();
+  if(saleError)return reply(503,{error:'Sotuvni tekshirib bo‘lmadi.'});
+  if(!sale)return reply(403,{error:'O‘zingiz kiritgan sotuvni tanlang.'});
+  const {data:existing,error:existingError}=await admin.from('customer_accounts').select('id').eq('sale_id',body.sale_id).maybeSingle();
+  if(existingError)return reply(503,{error:'Mijozlar uchun SQL migratsiyasini bajaring.'});
+  if(existing)return reply(409,{error:'Bu sotuv uchun mijoz kabineti allaqachon yaratilgan.'});
+  const login='zf-'+random(12).toLowerCase(),password=newPassword();
+  const {data,error}=await admin.auth.admin.createUser({email:login+'@accounts.themelio.invalid',password,email_confirm:true,app_metadata:{themelio_role:'customer',login}});
+  if(error)return authFailure(error,'create-customer',[password,token,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'']);
+  if(!data.user)return reply(503,{error:'Auth foydalanuvchi ma’lumotini qaytarmadi.'});
+  let registered;
+  try{registered=await admin.rpc('register_customer',{p_id:data.user.id,p_sale:body.sale_id,p_actor:user.id,p_login:login})}catch{registered={error:{code:'network'}}}
+  if(registered.error){
+   // A network failure can be ambiguous: never delete a successfully registered account.
+   const check=await admin.from('customer_accounts').select('id').eq('id',data.user.id).maybeSingle();
+   if(check.error)return reply(503,{error:'Natijani tekshirib bo‘lmadi. Mijozlar ro‘yxatini qayta yuklang.'});
+   if(!check.data){const cleanup=await admin.auth.admin.deleteUser(data.user.id);if(cleanup.error)console.error(JSON.stringify({event:'customer_cleanup_failed',id:data.user.id}));return reply(409,{error:'Mijoz kabineti yaratilmadi. Sotuv egasi va mavjud kabinetni tekshiring.'})}
+  }
+  return reply(200,{account:{id:data.user.id,login,role:'Mijoz',status:'active'},password});
+ }
+ if(!['director','admin'].includes(actor.app_role))return reply(403,{error:'Hisob yaratish uchun direktor yoki admin huquqi kerak.'});
  if(body.action==='reset-password'){
   const {data:member}=await admin.from('members').select('id,login,position,status,app_role,employment_status').eq('id',body.id).single();
   if(!member||!(member.app_role==='employee'||actor.app_role==='admin'&&member.app_role==='director')||member.employment_status&&member.employment_status!=='employed')return reply(404,{error:'Xodim topilmadi.'});

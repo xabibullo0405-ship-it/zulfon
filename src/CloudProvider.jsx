@@ -1,3 +1,4 @@
+import {CustomerCabinet} from './CustomerCabinet';
 import {BrandLogo} from './BrandLogo';
 import {pagedRows} from './lib/pagedRows';
 import {ui,getLocale} from './i18n/index.js';
@@ -12,7 +13,7 @@ const initials=name=>name.trim().split(/\s+/).filter(Boolean).slice(0,2).map(n=>
 const time=value=>new Date(value).toLocaleTimeString(getLocale(),{timeZone:'Asia/Tashkent',hour:'2-digit',minute:'2-digit'});
 function CloudLogin(){
  const [busy,setBusy]=useState(false),[error,setError]=useState('');
- return <div className="access-screen"><BrandLogo variant="full" className="login-brand"/><section className="panel access-card"><span className="modal-symbol"><KeyRound size={25}/></span><span className="eyebrow">{ui("ADMIN, DIREKTOR VA XODIMLAR UCHUN")}</span><h1>{ui("Kabinetga kirish")}</h1><p className="muted">{ui("O‘zingizga berilgan login va parol bilan kiring.")}</p><form onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);setError('');try{const {error}=await supabase.auth.signInWithPassword({email:loginEmail(f.get('login')),password:f.get('password')});if(error)setError(error.status===400?'Login yoki parol noto‘g‘ri.':'Kirish amalga oshmadi. Supabase ulanishini tekshiring.')}catch{setError('Serverga ulanib bo‘lmadi. Internet ulanishini tekshiring.')}finally{setBusy(false)}}}><label>{ui("Login")}<input name="login" autoComplete="username" required autoFocus/></label><label>{ui("Parol")}<input name="password" type="password" autoComplete="current-password" required/></label>{ui(error&&<p className="form-error" role="alert">{ui(error)}</p>)}<button className="btn primary full" disabled={busy}>{ui(busy?'Tekshirilmoqda...':'Kabinetga kirish')}<ArrowRight size={16}/></button></form><p className="login-hint">{ui("Hisobingiz yo‘qmi? Kirish ma’lumotlarini direktoringizdan oling.")}</p></section></div>;
+ return <div className="access-screen"><BrandLogo variant="full" className="login-brand"/><section className="panel access-card"><span className="modal-symbol"><KeyRound size={25}/></span><span className="eyebrow">{ui("ZULFON KABINETIGA KIRISH")}</span><h1>{ui("Kabinetga kirish")}</h1><p className="muted">{ui("O‘zingizga berilgan login va parol bilan kiring.")}</p><form onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);setError('');try{const {error}=await supabase.auth.signInWithPassword({email:loginEmail(f.get('login')),password:f.get('password')});if(error)setError(error.status===400?'Login yoki parol noto‘g‘ri.':'Kirish amalga oshmadi. Supabase ulanishini tekshiring.')}catch{setError('Serverga ulanib bo‘lmadi. Internet ulanishini tekshiring.')}finally{setBusy(false)}}}><label>{ui("Login")}<input name="login" autoComplete="username" required autoFocus/></label><label>{ui("Parol")}<input name="password" type="password" autoComplete="current-password" required/></label>{ui(error&&<p className="form-error" role="alert">{ui(error)}</p>)}<button className="btn primary full" disabled={busy}>{ui(busy?'Tekshirilmoqda...':'Kabinetga kirish')}<ArrowRight size={16}/></button></form><p className="login-hint">{ui("Kirish ma’lumotlarini mas’ul xodimdan oling. Mijozlar sotuvchiga murojaat qiladi.")}</p></section></div>;
 }
 export function CloudProvider({children,employee,admin}){
  const [session,setSession]=useState(undefined),[snapshot,setSnapshot]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(false);
@@ -21,6 +22,11 @@ export function CloudProvider({children,employee,admin}){
  const refresh=useCallback(async()=>{
   if(!session)return;const request=++version.current;setLoading(true);
   try{
+   if(session.user.app_metadata?.themelio_role==='customer'){
+    const {data,error}=await supabase.rpc('customer_dashboard');if(error)throw error;
+    if(!data)throw new Error('Mijoz kabineti topilmadi. Sotuvchiga murojaat qiling.');
+    if(request===version.current){setSnapshot({customer:data});setError('')}return;
+   }
    const results=await Promise.all(['members','reports','tasks','messages','projects','sales','project_documents','inventory_items','inventory_movements','construction_workers','payroll','receipt_costs'].map(table=>{const key=table==='receipt_costs'?'receipt_id':'id';return pagedRows((from,to)=>supabase.from(table).select('*').order('created_at',{ascending:table==='messages'}).order(key).range(from,to),500,key)}));
    let schemaReady=true,operationsReady=true,accountingReady=true;for(let i=0;i<results.length;i++)if(results[i].error){if(i>=4&&['42P01','PGRST205'].includes(results[i].error.code)){if(i<6)schemaReady=false;else if(i<10)operationsReady=false;else accountingReady=false;results[i]={data:[]}}else throw results[i].error;}
    if(request!==version.current)return;
@@ -44,6 +50,7 @@ export function CloudProvider({children,employee,admin}){
  if(session===undefined)return <div className="access-screen"><p>{ui("Sessiya tekshirilmoqda...")}</p></div>;
  if(!session)return <CloudLogin/>;
  if(!snapshot)return <div className="access-screen"><section className="panel access-card"><h2>{ui(error?'Ulanishni yakunlash kerak':'Ma’lumotlar yuklanmoqda...')}</h2>{ui(error&&<><p className="form-error" role="alert">{ui(error)}</p><button className="btn" onClick={refresh} disabled={loading}><RefreshCw size={15}/>{ui("Qayta tekshirish")}</button><button className="btn" onClick={signOut}><LogOut size={15}/>{ui("Chiqish")}</button></>)}</section></div>;
+ if(snapshot.customer)return <CustomerCabinet dashboard={snapshot.customer} refresh={refresh} signOut={signOut} loading={loading} error={error}/>;
  if(snapshot.me.employment_status&&snapshot.me.employment_status!=='employed')return <div className="access-screen"><section className="panel access-card"><h1>{ui("Hisob faol emas")}</h1><p className="muted">{ui(snapshot.me.employment_status==='deleted'?'Profilingiz o‘chirilgan.':'Ish faoliyatingiz to‘xtatilgan.')}{ui(" Qo‘shimcha ma’lumot uchun direktorga murojaat qiling.")}</p><button className="btn" onClick={signOut}>{ui("Chiqish")}</button></section></div>;
  const memberToPerson=m=>({id:m.id,accountId:m.id,name:m.name,role:m.position,initials:initials(m.name),phone:m.phone,email:m.contact_email,address:m.address,birthDate:m.birth_date,employment:m.employment_status||'employed',projectId:m.project_id,accessArea:m.access_area||'operations',color:'blue',online:false,report:snapshot.reports.some(r=>r.author_id===m.id&&r.report_date===todayCloud()),tasks:snapshot.tasks.filter(t=>t.assignee_id===m.id&&t.status!=='done').length});
  const allPeople=snapshot.members.filter(m=>m.app_role==='employee').map(memberToPerson);

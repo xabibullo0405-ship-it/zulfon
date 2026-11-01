@@ -3,6 +3,24 @@
 Loyiha: `pumkmcpekrbshcvfojim`.
 Frontend uchun to‘g‘ri URL: `https://pumkmcpekrbshcvfojim.supabase.co` — `/rest/v1/` qo‘shimchasisiz.
 
+## Mijoz kabineti (1-noyabr)
+
+Oldingi migratsiyalar, jumladan `202610260002_account_removal.sql`, o‘rnatilganidan keyin:
+
+1. SQL Editor’da **`supabase/migrations/202611010001_customer_cabinets.sql`** faylini to‘liq **bir marta** bajaring. Eski migratsiyalarni qayta bajarmang.
+2. Edge Functions → **manage-members → Code → index.ts** faylini repozitoriydagi eng yangi **`supabase/functions/manage-members/index.ts`** bilan to‘liq almashtiring va **Deploy updates** bosing. Server kalitini frontendga qo‘ymang; yangi secret kerak emas.
+3. Vercel yangi commitni yig‘gach saytni yangilang. Sotuvchi → **Sotuvlar**da sotuv kiriting, so‘ng **Mijozlar → Mijoz kabinetini yaratish**da o‘zingiz kiritgan sotilgan xonadonni tanlang. Login-parol bir marta chiqadi; uni tegishli mijozga bering. Mijoz shu saytning odatiy kirish oynasidan kiradi.
+
+Mijoz o‘z xonadoni belgisi, xarid sanasi, narxi/to‘langan summa/qoldiq, obyekt nomi/manzili, blok/qavatlar, rejalashtirilgan tugash sanasi va qurilish foizini ko‘radi. Foiz direktorning obyekt sozlamalaridan olinadi; uni yangilash mijoz kabinetida ham aks etadi. Mavjud sotuv yozuvi xaridor ma’lumotlarining manbasi, qayta qo‘lda kiritilmaydi. Har bir sotuv uchun bitta mijoz hisobi yaratiladi.
+
+**Haftalik rasmlar:** hafta boshi — **dushanba, Asia/Tashkent vaqti**. Shu obyektga biriktirilgan faol prorab dushanba kuni o‘sha kun sanasi bilan birinchi rasmli hisobotni yuborganda suratlar avtomatik mijoz kabinetiga qo‘shiladi. Alohida cron, mijozga rasm yuklash yoki matnni o‘chirish amali kerak emas. Matn, hisobot sarlavhasi, izohlar, prorabning boshqa hisobotlari va ichki hujjatlar mijozga berilmaydi. Prorab dushanba rasmli hisobot yubormasa eski kun rasmi o‘rniga qo‘yilmaydi; kabinetda yangi hafta uchun yangilik bo‘lmaydi. Bir haftada keyingi hisobotlar birinchi to‘plamni almashtirmaydi; direktor uni rad etsa shu to‘plam mijozdan yashiriladi. Migratsiyadan oldingi hisobotlar avtomatik tarqatilmaydi. Rasmlar kabinetda paydo bo‘ladi; email/Telegram/push jo‘natilishi qo‘shilmagan. Ochiq kabinet 30 soniyada va oynaga qaytilganda ma’lumotni tekshiradi, qo‘lda Yangilash ham bor.
+
+**Ruxsatlar:** faqat faol sotuvchi o‘z sotuviga kabinet yaratadi. Direktor yaratmaydi, barcha mijozlar ro‘yxatini kuzatadi; sotuvchi o‘z yaratgan sotuvlarining mijozlarini ko‘radi. Admin direktor kabinetini ochib ro‘yxatni ko‘ra oladi, lekin o‘z sessiyasi bilan sotuvchi nomidan yangi mijoz yaratmaydi. Mijozlar `members`ga qo‘shilmaydi, xodimlarning 10 ta hisob limitiga kirmaydi va xodimlar chat/oylik/ombor/pasport ma’lumotlariga kira olmaydi. Login va Auth hisobini yaratish serverda, sotuvga bog‘lash service-only RPC orqali qayta tekshiriladi. Parallel urinishlar bir sotuvga ikki kabinet yaratmaydi. Oddiy foydalanuvchi API orqali mijoz profilini o‘zi bog‘lay olmaydi.
+
+Suratlar mavjud yopiq `report-photos` bucketida qoladi; mijoz faqat o‘z obyektidagi haftalik to‘plam uchun vaqtinchalik imzolangan havola oladi. Oldin berilgan havola rad etilgandan keyin ham 10 daqiqalik amal muddatigacha ishlashi mumkin. Parollar ochiq bazada saqlanmaydi va keyin ro‘yxatda ko‘rsatilmaydi.
+
+Mahalliy tekshiruv: `npm run test:db`, `npm run test:edge`, `npm run test:customers:views`, `npm run build`. SQL testlar haqiqiy funksiyalar/RLSni PGlite’da tekshiradi, Auth Admin API testlari esa mock bilan ishlaydi. Hosted Supabase/Vercelga ushbu tekshiruvlar o‘zgarish kiritmaydi.
+
 ## Foydalanuvchini o‘chirish va umumiy chat interfeysi
 
 Oldingi migratsiyalar o‘rnatilgach **`supabase/migrations/202610260002_account_removal.sql`** faylini SQL Editor’da to‘liq bir marta bajaring. So‘ng `manage-members` Edge Function kodini repozitoriydagi eng yangi `supabase/functions/manage-members/index.ts` bilan almashtirib, Deploy updates bosing. Yangi Edge versiyasi admin o‘chirilgan direktor o‘rniga yangi direktor yaratishi uchun kerak.

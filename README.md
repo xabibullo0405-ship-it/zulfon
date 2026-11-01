@@ -1,5 +1,8 @@
 # Zulfon — qurilish boshqaruvi
 
+
+Mijoz kabineti: sotuvchi mavjud sotuvga login-parol yaratadi; direktor barcha mijozlar ro‘yxatini, sotuvchi o‘z mijozlarini ko‘radi. Mijozda xonadon/to‘lov ma’lumotlari, obyekt qurilish foizi va dushanba kungi prorab hisobotidan faqat suratlar bor. Mijozlar xodim limitiga kirmaydi. O‘rnatish uchun `supabase/migrations/202611010001_customer_cabinets.sql` va yangilangan `manage-members` Edge Function kerak — [yo‘riqnoma](SUPABASE_SETUP.md#mijoz-kabineti-1-noyabr).
+
 PDF maketlari asosida yaratilgan o‘zbek tilidagi React/Vite kabineti. Supabase Auth, direktor/xodim rollari, xodimning o‘z profilini to‘ldirishi, hisobot yuborish va direktor tomonidan tasdiqlash qo‘shilgan.
 
 ## Ishga tushirish

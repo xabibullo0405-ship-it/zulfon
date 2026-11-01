@@ -33,9 +33,9 @@ function LocalPreview({photo,onRemove,disabled}){
 }
 export function PhotoPicker({photos,onChange,disabled}){
  const [cameraOpen,setCameraOpen]=useState(false);
- return <section className="photo-picker"><div className="photo-picker-heading"><div><h3>{ui("Hisobot rasmlari ")}<span className="number-chip">{ui(photos.length)}/{ui(MAX_PHOTOS)}</span></h3><p>{ui("Kamerada suratga oling. Har bir hisobotga ")}{ui(MAX_PHOTOS)}{ui(" tagacha rasm.")}</p></div><button type="button" className="btn" disabled={disabled||photos.length>=MAX_PHOTOS} onClick={()=>setCameraOpen(true)}><Camera size={17}/>{ui("Kamerani ochish")}</button></div>{ui(photos.length>0&&<div className="photo-grid">{ui(photos.map(p=><LocalPreview key={p.id} photo={p} disabled={disabled} onRemove={()=>onChange(photos.filter(item=>item.id!==p.id))}/>))}</div>)}{ui(cameraOpen&&<CameraCapture onClose={()=>setCameraOpen(false)} onCapture={photo=>{onChange([...photos,photo]);setCameraOpen(false)}}/>)}</section>;
+ return <section className="photo-picker"><div className="photo-picker-heading"><div><h3>{ui(title)}<span className="number-chip">{ui(photos.length)}/{ui(MAX_PHOTOS)}</span></h3><p>{ui("Kamerada suratga oling. Har bir hisobotga ")}{ui(MAX_PHOTOS)}{ui(" tagacha rasm.")}</p></div><button type="button" className="btn" disabled={disabled||photos.length>=MAX_PHOTOS} onClick={()=>setCameraOpen(true)}><Camera size={17}/>{ui("Kamerani ochish")}</button></div>{ui(photos.length>0&&<div className="photo-grid">{ui(photos.map(p=><LocalPreview key={p.id} photo={p} disabled={disabled} onRemove={()=>onChange(photos.filter(item=>item.id!==p.id))}/>))}</div>)}{ui(cameraOpen&&<CameraCapture onClose={()=>setCameraOpen(false)} onCapture={photo=>{onChange([...photos,photo]);setCameraOpen(false)}}/>)}</section>;
 }
-export function ReportPhotoGallery({paths=[]}){
+export function ReportPhotoGallery({paths=[],title="Hisobot rasmlari "}){
  const [urls,setUrls]=useState([]),[error,setError]=useState(''),[retry,setRetry]=useState(0);
  const key=paths.join('|');
  useEffect(()=>{let active=true;setUrls([]);setError('');if(!paths.length)return;
@@ -43,7 +43,7 @@ export function ReportPhotoGallery({paths=[]}){
   const timer=setInterval(()=>setRetry(n=>n+1),540000);return()=>{active=false;clearInterval(timer)};
  },[key,retry]);
  if(!paths.length)return null;
- return <section className="report-photo-gallery"><h3><ImageIcon size={17}/>{ui("Hisobot rasmlari ")}<span className="number-chip">{ui(paths.length)}</span></h3>{ui(error?<div className="photo-load-error"><p role="alert">{ui(error)}</p><button className="btn" onClick={()=>setRetry(n=>n+1)}><RotateCcw size={14}/>{ui("Qayta yuklash")}</button></div>:urls.length?<div className="photo-grid">{ui(urls.map((url,i)=><a key={paths[i]} href={url} target="_blank" rel="noreferrer" aria-label={ui(`${i+1} — ${ui('rasmni katta ko‘rish')}`)}><img src={url} alt={ui(`${ui('Hisobot rasmlari')} ${i+1}`)} loading="lazy" onError={()=>setError('Rasm havolasi eskirgan yoki rasmni yuklab bo‘lmadi. Qayta yuklang.')}/></a>))}</div>:<p className="muted">{ui("Rasmlar yuklanmoqda...")}</p>)}</section>;
+ return <section className="report-photo-gallery"><h3><ImageIcon size={17}/>{ui(title)}<span className="number-chip">{ui(paths.length)}</span></h3>{ui(error?<div className="photo-load-error"><p role="alert">{ui(error)}</p><button className="btn" onClick={()=>setRetry(n=>n+1)}><RotateCcw size={14}/>{ui("Qayta yuklash")}</button></div>:urls.length?<div className="photo-grid">{ui(urls.map((url,i)=><a key={paths[i]} href={url} target="_blank" rel="noreferrer" aria-label={ui(`${i+1} — ${ui('rasmni katta ko‘rish')}`)}><img src={url} alt={ui(`${ui(title.trim())} ${i+1}`)} loading="lazy" onError={()=>setError('Rasm havolasi eskirgan yoki rasmni yuklab bo‘lmadi. Qayta yuklang.')}/></a>))}</div>:<p className="muted">{ui("Rasmlar yuklanmoqda...")}</p>)}</section>;
 }
 export async function submitReportWithPhotos({userId,submissionId,photos,fields,onProgress,callRpc=(name,args)=>supabase.rpc(name,args)}){
  if(photos.length>MAX_PHOTOS)throw new Error('Bitta hisobotga 5 tagacha rasm qo‘shish mumkin.');
